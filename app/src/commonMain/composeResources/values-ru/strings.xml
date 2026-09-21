@@ -1,0 +1,94 @@
+<!DOCTYPE resources [
+        <!ELEMENT resources (string)*>
+        <!ELEMENT string (#PCDATA)>
+        <!ATTLIST string
+                name CDATA #REQUIRED>
+        ]>
+<resources>
+    <string name="app_name">OpenPOS</string>
+    <string name="nav_invoices">Накладные</string>
+    <string name="nav_products">Товары</string>
+    <string name="nav_clients">Клиенты</string>
+    <string name="nav_history">История</string>
+    <string name="nav_settings">Настройки</string>
+    <string name="invoice_title">Новая накладная</string>
+    <string name="invoice_saved">Сохранено</string>
+    <string name="invoice_saving">Сохранение...</string>
+    <string name="invoice_total">ИТОГО:</string>
+    <string name="btn_print">Печать накладной</string>
+    <string name="btn_export_pdf">Экспорт в PDF</string>
+    <string name="db_badge">БД: sqlite.db</string>
+    <string name="btn_change">Сменить</string>
+    <string name="btn_new_client">+ Новый клиент</string>
+    <string name="tbl_number">№</string>
+    <string name="tbl_product_name">Наименование товара</string>
+    <string name="tbl_qty">Кол-во</string>
+    <string name="tbl_unit">Ед.</string>
+    <string name="tbl_price">Цена</string>
+    <string name="tbl_total">Сумма</string>
+    <string name="search_product_placeholder">Поиск товара для добавления...</string>
+    <string name="notes_placeholder">Примечания / Комментарии</string>
+    <string name="subtotal">Подытог:</string>
+    <string name="vat_rate">Ставка НДС:</string>
+    <string name="products_title">Товары</string>
+    <string name="btn_import_export">Импорт / Экспорт</string>
+    <string name="btn_new_product">Новый товар</string>
+    <string name="search_products_placeholder">Поиск по наименованию...</string>
+    <string name="tbl_default_price">Цена по умолч.</string>
+    <string name="tbl_actions">Действия</string>
+    <string name="clients_title">Клиенты</string>
+    <string name="btn_new_client_action">Новый клиент</string>
+    <string name="search_clients_placeholder">Поиск по наименованию или телефону...</string>
+    <string name="tbl_client_name">Наименование клиента</string>
+    <string name="tbl_inn">ИНН</string>
+    <string name="tbl_phone">Телефон</string>
+    <string name="tbl_address">Адрес</string>
+    <string name="history_title">История документов</string>
+    <string name="btn_export_history">Экспорт истории</string>
+    <string name="search_history_placeholder">Поиск по номеру накладной или клиенту...</string>
+    <string name="period">Период</string>
+    <string name="tbl_invoice_number">№ Накладной</string>
+    <string name="tbl_date">Дата</string>
+    <string name="tbl_status">Статус</string>
+    <string name="settings_title">Настройки</string>
+    <string name="tab_company_profile">Профиль компании</string>
+    <string name="tab_database_hardware">База данных и оборудование</string>
+    <string name="tab_financial_constants">Финансовые константы</string>
+    <string name="legal_name">Юридическое наименование</string>
+    <string name="invoice_prefix">Префикс накладных</string>
+    <string name="kpp">КПП</string>
+    <string name="legal_address">Юридический адрес</string>
+    <string name="bank_name">Наименование банка</string>
+    <string name="bic">БИК</string>
+    <string name="checking_account">Расчетный счет</string>
+    <string name="corr_account">Корр. счет</string>
+    <string name="btn_save_settings">Сохранить настройки</string>
+    <string name="active_db_path">Путь к активной базе данных SQLite</string>
+    <string name="btn_switch_db">Сменить базу данных...</string>
+    <string name="pos_printers">Печатающие устройства (POS / ККТ)</string>
+    <string name="default_printer">Принтер чеков / накладных по умолчанию</string>
+    <string name="status_paid">Оплачено</string>
+    <string name="status_issued">Выставлено</string>
+    <string name="status_draft">Черновик</string>
+    <string name="startup_select_db">Выберите базу данных чтобы продолжить</string>
+    <string name="startup_create_db">Создать базу данных</string>
+    <string name="startup_open_db">Открыть базу данных</string>
+    <string name="startup_invalid_file">Файл не является корректной базой данных!</string>
+    <string name="startup_failed_to_create_db">Не получилось создать базу данных!</string>
+    <string name="startup_welcome_title">Добро пожаловать в OpenPOS</string>
+    <string name="startup_welcome_subtitle">Система автоматизации продаж и учета</string>
+    <string name="startup_verifying">Проверка целостности базы данных...</string>
+    <string name="startup_verification_failed">Ошибка проверки базы данных</string>
+    <string name="startup_verification_failed_desc">Выбранный файл не является корректной базой данных OpenPOS или поврежден.</string>
+    <string name="startup_try_another">Выбрать другую базу данных</string>
+    <string name="startup_retry">Повторить проверку</string>
+    <string name="step_company_info">Информация о компании</string>
+    <string name="step_company_credentials">Реквизиты (ИНН / КПП)</string>
+    <string name="step_bank_details">Банковские реквизиты</string>
+    <string name="company_type">Тип компании</string>
+    <string name="legal_entity">Юр. лицо</string>
+    <string name="individual">ИП</string>
+    <string name="btn_back">Назад</string>
+    <string name="btn_next">Далее</string>
+    <string name="btn_create_db">Создать базу данных</string>
+</resources>
