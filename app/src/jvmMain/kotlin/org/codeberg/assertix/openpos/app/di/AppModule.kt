@@ -49,8 +49,8 @@ val appModule = module {
         HistoryViewModel(get())
     }
 
-    viewModel { (invoiceId: Int?) ->
-        InvoiceEditorViewModel(get(), get(), get(), get(), get(), invoiceId)
+    viewModel {
+        InvoiceEditorViewModel(get(), get(), get(), get())
     }
 
     viewModel {

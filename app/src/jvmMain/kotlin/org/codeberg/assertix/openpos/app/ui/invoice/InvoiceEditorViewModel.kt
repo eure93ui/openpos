@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.codeberg.assertix.openpos.app.settings.AppSettings
 import org.codeberg.assertix.openpos.data.model.Client
 import org.codeberg.assertix.openpos.data.model.FullName
 import org.codeberg.assertix.openpos.data.model.Item
@@ -29,11 +28,10 @@ class InvoiceEditorViewModel(
     private val invoiceRepository: InvoiceRepository,
     private val clientRepository: ClientRepository,
     private val itemsRepository: ItemsRepository,
-    private val appSettings: AppSettings,
     private val financialRepository: FinancialRepository,
-    private val initialInvoiceId: Int? = null
 ) : ViewModel() {
 
+    private val initialInvoiceId: Int? = null
     private val _uiState = MutableStateFlow(InvoiceEditorUiState())
     val uiState: StateFlow<InvoiceEditorUiState> = _uiState.asStateFlow()
 
@@ -46,12 +44,12 @@ class InvoiceEditorViewModel(
         } else {
             viewModelScope.launch {
                 val financialSettings = financialRepository.get()
-                val count: Long = try {
-                    invoiceRepository.getCount()
+                val id = try {
+                    invoiceRepository.getNewId()
                 } catch (_: Exception) {
-                    0L
+                    0
                 }
-                val newNumber = "${financialSettings.invoicePrefix}${(count + 1).toString().padStart(5, '0')}"
+                val newNumber = "${financialSettings.invoicePrefix}${(id + 1).toString().padStart(5, '0')}"
                 _uiState.update {
                     it.copy(
                         taxPercent = financialSettings.taxPercent,
@@ -262,7 +260,7 @@ class InvoiceEditorViewModel(
         viewModelScope.launch {
             val financialSettings = financialRepository.get()
             val count: Long = try {
-                invoiceRepository.getCount()
+                invoiceRepository.getNewId().toLong()
             } catch (_: Exception) {
                 0L
             }
@@ -404,17 +402,15 @@ class InvoiceEditorViewModel(
         }
     }
 
+    fun save() {
+        commitAndSave(status = null)
+    }
+
     fun printInvoice(onPrint: (Invoice) -> Unit) {
         commitAndSave(status = null, onSuccess = onPrint)
     }
 
     fun exportPdf(onExport: (Invoice) -> Unit) {
         commitAndSave(status = null, onSuccess = onExport)
-    }
-
-    fun onScreenSwitch() {
-        if (validate()) {
-            commitAndSave(status = null) {}
-        }
     }
 }

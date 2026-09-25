@@ -108,9 +108,11 @@ class InvoiceRepository(
             filtered.drop(offset.toInt()).take(limit)
         }
 
+    suspend fun getNewId() = query { InvoicesTable.insertAndGetId {}.value }
+
     suspend fun getCount(searchQuery: String = ""): Long =
         query {
-            val allInvoices: List<Invoice> = getAllInternal()
+            val allInvoices = getAllInternal()
             val query: String = searchQuery.trim().lowercase()
             if (query.isBlank()) {
                 allInvoices.size.toLong()
