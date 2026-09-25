@@ -10,10 +10,7 @@ import androidx.compose.ui.Modifier
 import org.codeberg.assertix.openpos.app.ui.UiConstants
 import org.codeberg.assertix.openpos.app.ui.toImage
 import org.codeberg.assertix.openpos.data.model.Client
-import org.codeberg.assertix.openpos.resources.Res
-import org.codeberg.assertix.openpos.resources.btn_new_client
-import org.codeberg.assertix.openpos.resources.close
-import org.codeberg.assertix.openpos.resources.search
+import org.codeberg.assertix.openpos.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -36,19 +33,20 @@ internal fun InvoiceClientSection(
         verticalAlignment = Alignment.Top
     ) {
         Column(modifier = Modifier.weight(UiConstants.WeightDefault)) {
+            val noPhoneText = stringResource(Res.string.no_phone)
             val clientTextFieldValue = if (clientSearchQuery.isNotEmpty()) {
                 clientSearchQuery
             } else {
                 selectedClient?.let { 
-                    "${it.fullName.surname} ${it.fullName.name} ${it.fullName.middleName.orEmpty()} (${it.phoneNumber?.value ?: "Без телефона"})" 
+                    "${it.fullName.surname} ${it.fullName.name} ${it.fullName.middleName.orEmpty()} (${it.phoneNumber?.value ?: noPhoneText})" 
                 } ?: ""
             }
 
             OutlinedTextField(
                 value = clientTextFieldValue,
                 onValueChange = onClientSearchQueryChange,
-                placeholder = { Text("Выберите или найдите клиента...") },
-                label = { Text("Клиент *") },
+                placeholder = { Text(stringResource(Res.string.invoice_client_placeholder)) },
+                label = { Text(stringResource(Res.string.invoice_client_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.medium,
                 isError = clientError != null,
