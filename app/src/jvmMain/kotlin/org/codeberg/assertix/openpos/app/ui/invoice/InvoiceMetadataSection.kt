@@ -9,9 +9,7 @@ import org.codeberg.assertix.openpos.app.ui.components.StatusBadge
 import org.codeberg.assertix.openpos.data.model.invoice.InvoiceStatus
 import androidx.compose.ui.Alignment
 import org.codeberg.assertix.openpos.app.ui.toImage
-import org.codeberg.assertix.openpos.resources.Res
-import org.codeberg.assertix.openpos.resources.history
-import org.codeberg.assertix.openpos.resources.vat_rate
+import org.codeberg.assertix.openpos.resources.*
 import org.jetbrains.compose.resources.stringResource
 import java.time.Instant
 import java.time.LocalDate
@@ -57,14 +55,14 @@ internal fun InvoiceMetadataSection(
                         showDatePicker = false
                     }
                 ) {
-                    Text("OK")
+                    Text(stringResource(Res.string.btn_ok))
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDatePicker = false }
                 ) {
-                    Text("Отмена")
+                    Text(stringResource(Res.string.btn_cancel))
                 }
             }
         ) {
@@ -88,7 +86,7 @@ internal fun InvoiceMetadataSection(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Статус", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(Res.string.invoice_status_label), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     StatusBadge(status = status)
                 }
             }
@@ -155,7 +153,7 @@ internal fun InvoiceMetadataSection(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(verticalArrangement = Arrangement.Center) {
-                        Text("Дата выставления", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(Res.string.invoice_date_label), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(issueDate, style = MaterialTheme.typography.bodyMedium)
                     }
                     IconButton(onClick = { showDatePicker = true }) {

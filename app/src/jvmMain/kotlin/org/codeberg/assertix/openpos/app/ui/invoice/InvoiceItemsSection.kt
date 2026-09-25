@@ -91,8 +91,8 @@ internal fun InvoiceItemsSection(
                 if (items.isEmpty()) {
                     EmptyStateView(
                         icon = Res.drawable.shopping_cart,
-                        title = "Накладная пуста",
-                        description = "Найдите и добавьте товары ниже"
+                        title = stringResource(Res.string.invoice_empty_title),
+                        description = stringResource(Res.string.invoice_empty_desc)
                     )
                 } else {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {

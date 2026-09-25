@@ -6,6 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.codeberg.assertix.openpos.data.model.Item
+import org.codeberg.assertix.openpos.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun ItemDialog(
@@ -19,7 +21,7 @@ internal fun ItemDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (item == null) "Новый товар" else "Редактировать товар") },
+        title = { Text(if (item == null) stringResource(Res.string.item_dialog_new) else stringResource(Res.string.item_dialog_edit)) },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -28,21 +30,21 @@ internal fun ItemDialog(
                 OutlinedTextField(
                     value = productName,
                     onValueChange = { productName = it },
-                    label = { Text("Наименование товара *") },
+                    label = { Text(stringResource(Res.string.item_name_label)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = unitOfMeasure,
                     onValueChange = { unitOfMeasure = it },
-                    label = { Text("Единица измерения * (например, шт, кг, л)") },
+                    label = { Text(stringResource(Res.string.item_unit_label)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = defaultPrice,
                     onValueChange = { defaultPrice = it },
-                    label = { Text("Цена по умолчанию * (например, 150.00)") },
+                    label = { Text(stringResource(Res.string.item_price_label)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -53,12 +55,12 @@ internal fun ItemDialog(
                 onClick = { onSave(productName, unitOfMeasure, defaultPrice) },
                 enabled = productName.isNotBlank() && unitOfMeasure.isNotBlank() && defaultPrice.isNotBlank()
             ) {
-                Text("Сохранить")
+                Text(stringResource(Res.string.btn_save))
             }
         },
         dismissButton = {
             OutlinedButton(onClick = onDismiss) {
-                Text("Отмена")
+                Text(stringResource(Res.string.btn_cancel))
             }
         }
     )
