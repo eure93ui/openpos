@@ -29,9 +29,9 @@ class InvoiceEditorViewModel(
     private val clientRepository: ClientRepository,
     private val itemsRepository: ItemsRepository,
     private val financialRepository: FinancialRepository,
+    initialInvoiceId: Int? = null
 ) : ViewModel() {
 
-    private val initialInvoiceId: Int? = null
     private val _uiState = MutableStateFlow(InvoiceEditorUiState())
     val uiState: StateFlow<InvoiceEditorUiState> = _uiState.asStateFlow()
 
@@ -42,21 +42,7 @@ class InvoiceEditorViewModel(
         if (initialInvoiceId != null && initialInvoiceId > 0) {
             loadInvoice(initialInvoiceId)
         } else {
-            viewModelScope.launch {
-                val financialSettings = financialRepository.get()
-                val id = try {
-                    invoiceRepository.getNewId()
-                } catch (_: Exception) {
-                    0
-                }
-                val newNumber = "${financialSettings.invoicePrefix}${(id + 1).toString().padStart(5, '0')}"
-                _uiState.update {
-                    it.copy(
-                        taxPercent = financialSettings.taxPercent,
-                        invoiceNumber = newNumber,
-                    )
-                }
-            }
+            resetInvoice()
         }
         loadClients()
     }
@@ -259,15 +245,12 @@ class InvoiceEditorViewModel(
     fun resetInvoice() {
         viewModelScope.launch {
             val financialSettings = financialRepository.get()
-            val count: Long = try {
-                invoiceRepository.getNewId().toLong()
-            } catch (_: Exception) {
-                0L
-            }
-            val newNumber: String = "${financialSettings.invoicePrefix}${(count + 1).toString().padStart(5, '0')}"
+            val id = invoiceRepository.getNextId()
+            val formattedId = formattedId(id, financialSettings.invoicePrefix)
+
             _uiState.value = InvoiceEditorUiState(
                 taxPercent = financialSettings.taxPercent,
-                invoiceNumber = newNumber
+                invoiceNumber = formattedId
             )
         }
     }

@@ -43,7 +43,7 @@ class HistoryViewModel(private val invoiceRepository: InvoiceRepository) : ViewM
                 val sizeVal = state.querySize.size
                 val offset = (state.currentPage - 1).toLong() * sizeVal
                 val invoices = invoiceRepository.getInvoices(sizeVal, offset, state.searchQuery)
-                val total = invoiceRepository.getCount(state.searchQuery)
+                val total = invoiceRepository.count(state.searchQuery)
 
                 val maxPage = if (total > 0) ((total + sizeVal - 1) / sizeVal).toInt() else 1
                 val validPage = if (state.currentPage > maxPage) maxPage else state.currentPage

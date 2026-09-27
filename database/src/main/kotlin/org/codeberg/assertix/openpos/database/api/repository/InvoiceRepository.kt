@@ -13,9 +13,13 @@ import org.codeberg.assertix.openpos.database.model.InvoicesTable
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.core.like
+import org.jetbrains.exposed.v1.core.lowerCase
+import org.jetbrains.exposed.v1.core.max
 import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
 
@@ -108,18 +112,32 @@ class InvoiceRepository(
             filtered.drop(offset.toInt()).take(limit)
         }
 
-    suspend fun getNewId() = query { InvoicesTable.insertAndGetId {}.value }
-
-    suspend fun getCount(searchQuery: String = ""): Long =
+    suspend fun getNextId() =
         query {
-            val allInvoices = getAllInternal()
-            val query: String = searchQuery.trim().lowercase()
-            if (query.isBlank()) {
-                allInvoices.size.toLong()
-            } else {
-                allInvoices.count { it.filter(query) }.toLong()
-            }
+            val max = InvoicesTable.id.max()
+
+            val lastInsertedId =
+                InvoicesTable
+                    .select(max)
+                    .singleOrNull()
+                    ?.get(max)
+                    ?.value ?: 0
+
+            lastInsertedId + 1
         }
+
+    suspend fun count(searchQuery: String = "") = query {
+        val cleanSearchQuery: String = searchQuery.trim().lowercase()
+        val invoicesQuery = InvoicesTable.selectAll()
+
+        if (cleanSearchQuery.isBlank()) {
+            invoicesQuery.count()
+        } else {
+            invoicesQuery.where {
+                InvoicesTable.clientNameSnapshot.lowerCase() like "%$cleanSearchQuery%"
+            }.count()
+        }
+    }
 
     suspend fun delete(invoiceId: Int): Boolean =
         query {
