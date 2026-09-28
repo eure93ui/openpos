@@ -17,6 +17,6 @@ fun BigDecimal.stringRepresentation(defaultLanguage: String): String {
 fun currencyAndLanguageFor(language: String) =
     when (language) {
         "ru" -> MoneyToStr.Currency.RUR to MoneyToStr.Language.RUS
-        "en" -> MoneyToStr.Currency.USD to MoneyToStr.Language.RUS
-        else -> MoneyToStr.Currency.USD to MoneyToStr.Language.RUS
+        "en" -> MoneyToStr.Currency.USD to MoneyToStr.Language.ENG
+        else -> MoneyToStr.Currency.USD to MoneyToStr.Language.ENG
     }

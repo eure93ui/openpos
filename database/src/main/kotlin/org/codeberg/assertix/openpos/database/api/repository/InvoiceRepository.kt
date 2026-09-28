@@ -22,6 +22,7 @@ import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
+import java.time.LocalDate
 
 class InvoiceRepository(
     private val sessionHolder: SessionHolder,
@@ -97,17 +98,18 @@ class InvoiceRepository(
         limit: Int,
         offset: Long,
         searchQuery: String = "",
+        startDate: LocalDate? = null,
+        endDate: LocalDate? = null,
     ): List<Invoice> =
         query {
             val allInvoices: List<Invoice> = getAllInternal()
             val query: String = searchQuery.trim().lowercase()
             val filtered: List<Invoice> =
-                if (query.isBlank()) {
-                    allInvoices
-                } else {
-                    allInvoices.filter { invoice ->
-                        invoice.filter(query)
-                    }
+                allInvoices.filter { invoice ->
+                    val matchesSearch = query.isBlank() || invoice.filter(query)
+                    val matchesStartDate = startDate == null || !invoice.issueDate.isBefore(startDate)
+                    val matchesEndDate = endDate == null || !invoice.issueDate.isAfter(endDate)
+                    matchesSearch && matchesStartDate && matchesEndDate
                 }
             filtered.drop(offset.toInt()).take(limit)
         }
@@ -126,19 +128,20 @@ class InvoiceRepository(
             lastInsertedId + 1
         }
 
-    suspend fun count(searchQuery: String = "") =
+    suspend fun count(
+        searchQuery: String = "",
+        startDate: LocalDate? = null,
+        endDate: LocalDate? = null,
+    ): Long =
         query {
-            val cleanSearchQuery: String = searchQuery.trim().lowercase()
-            val invoicesQuery = InvoicesTable.selectAll()
-
-            if (cleanSearchQuery.isBlank()) {
-                invoicesQuery.count()
-            } else {
-                invoicesQuery
-                    .where {
-                        InvoicesTable.clientNameSnapshot.lowerCase() like "%$cleanSearchQuery%"
-                    }.count()
-            }
+            val queryStr: String = searchQuery.trim().lowercase()
+            val allInvoices: List<Invoice> = getAllInternal()
+            allInvoices.count { invoice ->
+                val matchesSearch = queryStr.isBlank() || invoice.filter(queryStr)
+                val matchesStartDate = startDate == null || !invoice.issueDate.isBefore(startDate)
+                val matchesEndDate = endDate == null || !invoice.issueDate.isAfter(endDate)
+                matchesSearch && matchesStartDate && matchesEndDate
+            }.toLong()
         }
 
     suspend fun delete(invoiceId: Int): Boolean =

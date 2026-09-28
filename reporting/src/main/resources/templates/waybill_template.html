@@ -116,13 +116,16 @@
             font-size: 8pt;
         }
 
-        /* Сумма прописью */
+        /* Сумма прописью с рамкой сверху и снизу */
         .amount-in-words {
             font-size: 7.5pt;
             font-weight: bold;
+            margin-top: 4px;
             margin-bottom: 6px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 3px;
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            padding: 3px 2px;
+            background-color: #fafafa;
         }
 
         /* Блок дисклеймера / условий */
@@ -132,8 +135,7 @@
             text-align: justify;
             line-height: 1.15;
             margin-bottom: 6px;
-            border-top: 1px solid #ccc;
-            padding-top: 3px;
+            padding-top: 2px;
         }
 
         /* Блок подписей сторон */
@@ -194,7 +196,7 @@
                     <tbody>
                     {% for item in invoice.items %}
                     <tr>
-                        <td class="text-center">{{ loop.index }}</td>
+                        <td class="text-center">{{ item.index }}</td>
                         <td>{{ item.productNameSnapshot }}</td>
                         <td class="text-center">{{ item.unitOfMeasureSnapshot }}</td>
                         <td class="text-right">{{ item.quantity }}</td>
@@ -224,7 +226,7 @@
 
                 <!-- Сумма прописью -->
                 <div class="amount-in-words">
-                    Сумма прописью: {{ invoiceAmountInWords }}
+                    Сумма прописью: {{ invoice.invoiceAmountInWords }}
                 </div>
 
                 <!-- Юридический дисклеймер -->
@@ -283,7 +285,7 @@
                     <tbody>
                     {% for item in invoice.items %}
                     <tr>
-                        <td class="text-center">{{ loop.index }}</td>
+                        <td class="text-center">{{ item.index }}</td>
                         <td>{{ item.productNameSnapshot }}</td>
                         <td class="text-center">{{ item.unitOfMeasureSnapshot }}</td>
                         <td class="text-right">{{ item.quantity }}</td>
@@ -313,7 +315,7 @@
 
                 <!-- Сумма прописью -->
                 <div class="amount-in-words">
-                    Сумма прописью: {{ invoiceAmountInWords }}
+                    Сумма прописью: {{ invoice.invoiceAmountInWords }}
                 </div>
 
                 <!-- Юридический дисклеймер -->
