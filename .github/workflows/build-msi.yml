@@ -2,9 +2,9 @@ name: Build Windows MSI
 
 on:
   push:
-    branches: [ "github" ]
+    branches: [ "main", "github" ]
   pull_request:
-    branches: [ "github" ]
+    branches: [ "main", "github" ]
   workflow_dispatch:
 
 jobs:
