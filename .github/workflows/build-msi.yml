@@ -33,5 +33,5 @@ jobs:
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: fuzzyroom-windows-msi
-          path: build/compose/binaries/main/msi/*.msi
+          name: openpos-windows-msi
+          path: app/build/compose/binaries/main/msi/*.msi
