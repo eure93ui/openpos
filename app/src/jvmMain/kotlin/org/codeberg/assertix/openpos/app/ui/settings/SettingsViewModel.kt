@@ -12,8 +12,13 @@ import org.codeberg.assertix.openpos.app.settings.AppSettings
 import org.codeberg.assertix.openpos.data.model.FinancialConfiguration
 import org.codeberg.assertix.openpos.data.model.PhoneNumber
 import org.codeberg.assertix.openpos.data.model.company.*
+import org.codeberg.assertix.openpos.database.api.SessionHolder
 import org.codeberg.assertix.openpos.database.api.repository.CompanyProfileRepository
 import org.codeberg.assertix.openpos.database.api.repository.finance.FinancialRepository
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+import kotlin.io.path.exists
 
 data class SettingsUiState(
     val legalName: String = "",
@@ -38,7 +43,8 @@ data class SettingsUiState(
 class SettingsViewModel(
     private val companyProfileRepository: CompanyProfileRepository,
     private val appSettings: AppSettings,
-    private val financialRepository: FinancialRepository
+    private val financialRepository: FinancialRepository,
+    private val sessionHolder: SessionHolder
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -54,7 +60,9 @@ class SettingsViewModel(
                 _uiState.update { it.copy(isLoading = true, errorMessage = null, saveSuccess = false) }
                 val profile = companyProfileRepository.get()
                 val financialSettings = financialRepository.get()
-                val dbPath = appSettings.rememberedDatabase.value?.toAbsolutePath()?.toString() ?: ""
+                val dbPath = sessionHolder.currentPath?.toAbsolutePath()?.toString()
+                    ?: appSettings.rememberedDatabase.value?.toAbsolutePath()?.toString()
+                    ?: ""
                 _uiState.update {
                     it.copy(
                         legalName = profile.companyInfo.fullNaming,
@@ -123,6 +131,54 @@ class SettingsViewModel(
                 _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, errorMessage = e.message, saveSuccess = false) }
+            }
+        }
+    }
+
+    fun importDatabase(path: Path) {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, errorMessage = null, saveSuccess = false) }
+                val isValid = sessionHolder.validateDatabase(path)
+                if (isValid) {
+                    sessionHolder.switchSession(path)
+                    appSettings.rememberDatabase(path)
+                    loadProfile()
+                } else {
+                    _uiState.update { it.copy(isLoading = false, errorMessage = "Выбранный файл не является корректной базой данных SQLite!") }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
+            }
+        }
+    }
+
+    fun exportDatabase(path: Path) {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, errorMessage = null, saveSuccess = false) }
+                val currentPath = sessionHolder.currentPath
+                if (currentPath != null && currentPath.exists()) {
+                    Files.copy(currentPath, path, StandardCopyOption.REPLACE_EXISTING)
+                    _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
+                } else {
+                    _uiState.update { it.copy(isLoading = false, errorMessage = "Активная база данных не найдена") }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
+            }
+        }
+    }
+
+    fun exportEmptySchema(path: Path) {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, errorMessage = null, saveSuccess = false) }
+                val bytes = org.codeberg.assertix.openpos.resources.Res.readBytes("files/schema.sqlite")
+                Files.write(path, bytes)
+                _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
             }
         }
     }

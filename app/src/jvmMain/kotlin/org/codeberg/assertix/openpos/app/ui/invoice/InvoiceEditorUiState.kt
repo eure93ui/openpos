@@ -34,7 +34,10 @@ data class InvoiceEditorUiState(
     val clientError: String? = null,
     val itemsError: String? = null,
     val generalError: String? = null,
-    val successMessage: String? = null
+    val successMessage: String? = null,
+    val isPdfPreviewVisible: Boolean = false,
+    val previewImages: List<java.awt.image.BufferedImage> = emptyList(),
+    val isPdfProcessing: Boolean = false
 ) {
     val subtotal: BigDecimal = itemsTotal(items)
     val taxAmount: BigDecimal = calculateTaxForItems(items, taxPercent)

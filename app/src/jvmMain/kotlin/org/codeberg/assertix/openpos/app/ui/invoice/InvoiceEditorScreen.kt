@@ -1,14 +1,20 @@
 package org.codeberg.assertix.openpos.app.ui.invoice
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.dp
+import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
+import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
 import org.codeberg.assertix.openpos.app.ui.clients.ClientDialog
 import org.codeberg.assertix.openpos.app.ui.components.*
 import org.codeberg.assertix.openpos.app.ui.items.ItemDialog
@@ -17,6 +23,7 @@ import org.codeberg.assertix.openpos.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.io.path.Path
 
 @Composable
 fun InvoiceEditorScreen(
@@ -30,6 +37,14 @@ fun InvoiceEditorScreen(
     val state by viewModel.uiState.collectAsState()
     var showResetConfirmation by remember { mutableStateOf(false) }
 
+    val fileSaverLauncher = rememberFileSaverLauncher(
+        dialogSettings = FileKitDialogSettings.createDefault()
+    ) { platformFile ->
+        platformFile?.file?.path?.let { pathString ->
+            viewModel.exportPdf(Path(pathString))
+        }
+    }
+
     AppScreenContainer(
         notificationMessage = state.successMessage ?: state.generalError,
         isError = state.generalError != null,
@@ -39,19 +54,22 @@ fun InvoiceEditorScreen(
             title = if (state.isExisting) state.invoiceNumber else stringResource(Res.string.invoice_title),
             badgeText = if (state.isExisting) state.issueDate else "${state.invoiceNumber} | ${state.issueDate}",
             onReturnClick = if (state.isExisting) onReturn else null,
-            onPrimaryActionClick = {
-                viewModel.printInvoice { invoice ->
-                    println("Printed invoice: ${invoice.invoiceNumber}")
-                }
-            },
-            primaryActionText = stringResource(Res.string.btn_print),
-            primaryActionIcon = Res.drawable.print,
             onSecondaryActionClick = {
-                viewModel.exportPdf { invoice ->
-                    println("Exported PDF invoice: ${invoice.invoiceNumber}")
-                }
+                fileSaverLauncher.launch(
+                    suggestedName = "invoice_${state.invoiceNumber}",
+                    defaultExtension = "pdf"
+                )
             },
-            secondaryActionText = stringResource(Res.string.btn_export_pdf)
+            secondaryActionText = stringResource(Res.string.btn_export_pdf),
+            secondaryActionIcon = Res.drawable.upload_file,
+            primaryActionContent = {
+                PrintSplitButton(
+                    isProcessing = state.isPdfProcessing,
+                    onPrintActive = { viewModel.printActive() },
+                    onOpenExternal = { viewModel.printExternal() },
+                    onOpenPreview = { viewModel.openPreview() }
+                )
+            }
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -154,6 +172,61 @@ fun InvoiceEditorScreen(
         )
     }
 
+    if (state.isPdfPreviewVisible) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(Res.string.preview_title),
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    Button(onClick = { viewModel.closePreview() }) {
+                        Text(stringResource(Res.string.btn_close))
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .padding(16.dp)
+                ) {
+                    val scrollState = rememberScrollState()
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        state.previewImages.forEachIndexed { index, bufferedImage ->
+                            Image(
+                                bitmap = bufferedImage.toComposeImageBitmap(),
+                                contentDescription = "Page ${index + 1}",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     if (showResetConfirmation) {
         AlertDialog(
             onDismissRequest = { showResetConfirmation = false },
@@ -169,5 +242,81 @@ fun InvoiceEditorScreen(
                 TextButton(onClick = { showResetConfirmation = false }) { Text(stringResource(Res.string.btn_cancel)) }
             }
         )
+    }
+}
+
+@Composable
+private fun PrintSplitButton(
+    isProcessing: Boolean,
+    onPrintActive: () -> Unit,
+    onOpenExternal: () -> Unit,
+    onOpenPreview: () -> Unit
+) {
+    var dropdownExpanded by remember { mutableStateOf(false) }
+
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.height(40.dp).padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            TextButton(
+                onClick = onPrintActive,
+                enabled = !isProcessing,
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+            ) {
+                if (isProcessing) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Res.drawable.print.toImage()
+                }
+                Spacer(Modifier.width(4.dp))
+                Text(stringResource(Res.string.btn_print))
+            }
+
+            VerticalDivider(
+                modifier = Modifier.height(20.dp).width(1.dp),
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
+            )
+
+            Box {
+                IconButton(
+                    onClick = { dropdownExpanded = true },
+                    enabled = !isProcessing,
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Res.drawable.arrow_forward.toImage()
+                }
+
+                DropdownMenu(
+                    expanded = dropdownExpanded,
+                    onDismissRequest = { dropdownExpanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(Res.string.invoice_open_external)) },
+                        onClick = {
+                            dropdownExpanded = false
+                            onOpenExternal()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(Res.string.invoice_open_preview)) },
+                        onClick = {
+                            dropdownExpanded = false
+                            onOpenPreview()
+                        }
+                    )
+                }
+            }
+        }
     }
 }

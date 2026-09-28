@@ -59,6 +59,9 @@
     <string name="btn_save_settings">Save Settings</string>
     <string name="active_db_path">Active SQLite Database Path</string>
     <string name="btn_switch_db">Switch Database...</string>
+    <string name="btn_import_db">Import SQLite Database...</string>
+    <string name="btn_export_db">Export Data to SQLite...</string>
+    <string name="btn_export_empty_db">Export Empty Schema SQLite...</string>
     <string name="pos_printers">POS Printers</string>
     <string name="default_printer">Default Receipt/Waybill Printer</string>
     <string name="status_paid">Paid</string>
@@ -116,4 +119,8 @@
     <string name="btn_reset">Reset</string>
     <string name="invoice_status_label">Status</string>
     <string name="invoice_date_label">Issue Date</string>
+    <string name="invoice_open_external">Open in External App</string>
+    <string name="invoice_open_preview">PDF Preview</string>
+    <string name="preview_title">PDF Preview</string>
+    <string name="btn_close">Close</string>
 </resources>

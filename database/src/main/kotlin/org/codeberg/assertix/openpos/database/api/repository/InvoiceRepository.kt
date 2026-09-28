@@ -126,18 +126,20 @@ class InvoiceRepository(
             lastInsertedId + 1
         }
 
-    suspend fun count(searchQuery: String = "") = query {
-        val cleanSearchQuery: String = searchQuery.trim().lowercase()
-        val invoicesQuery = InvoicesTable.selectAll()
+    suspend fun count(searchQuery: String = "") =
+        query {
+            val cleanSearchQuery: String = searchQuery.trim().lowercase()
+            val invoicesQuery = InvoicesTable.selectAll()
 
-        if (cleanSearchQuery.isBlank()) {
-            invoicesQuery.count()
-        } else {
-            invoicesQuery.where {
-                InvoicesTable.clientNameSnapshot.lowerCase() like "%$cleanSearchQuery%"
-            }.count()
+            if (cleanSearchQuery.isBlank()) {
+                invoicesQuery.count()
+            } else {
+                invoicesQuery
+                    .where {
+                        InvoicesTable.clientNameSnapshot.lowerCase() like "%$cleanSearchQuery%"
+                    }.count()
+            }
         }
-    }
 
     suspend fun delete(invoiceId: Int): Boolean =
         query {

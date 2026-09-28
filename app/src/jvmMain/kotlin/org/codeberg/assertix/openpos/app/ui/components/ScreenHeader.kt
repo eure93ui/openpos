@@ -23,6 +23,7 @@ fun ScreenHeader(
     onSecondaryActionClick: (() -> Unit)? = null,
     secondaryActionText: String? = null,
     secondaryActionIcon: DrawableResource? = null,
+    primaryActionContent: @Composable (() -> Unit)? = null,
     extraContent: @Composable RowScope.() -> Unit = {}
 ) {
     Row(
@@ -69,7 +70,9 @@ fun ScreenHeader(
                     Text(secondaryActionText)
                 }
             }
-            if (primaryActionText != null && onPrimaryActionClick != null) {
+            if (primaryActionContent != null) {
+                primaryActionContent()
+            } else if (primaryActionText != null && onPrimaryActionClick != null) {
                 Button(onClick = onPrimaryActionClick) {
                     if (primaryActionIcon != null) {
                         primaryActionIcon.toImage()

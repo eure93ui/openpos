@@ -33,10 +33,7 @@ fun HistoryScreen(
                 badgeText = "Всего: ${state.totalInvoices}",
                 onPrimaryActionClick = onNewInvoice,
                 primaryActionText = stringResource(Res.string.btn_new_client_action),
-                primaryActionIcon = Res.drawable.add,
-                onSecondaryActionClick = { println("Export History clicked") },
-                secondaryActionText = stringResource(Res.string.btn_export_history),
-                secondaryActionIcon = Res.drawable.export_notes
+                primaryActionIcon = Res.drawable.add
             )
 
             Row(

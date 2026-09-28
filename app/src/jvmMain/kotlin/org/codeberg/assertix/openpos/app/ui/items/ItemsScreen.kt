@@ -30,10 +30,7 @@ fun ItemsScreen(viewModel: ItemsViewModel = koinViewModel()) {
                 badgeText = "Всего: ${state.totalItems}",
                 onPrimaryActionClick = { viewModel.showAddDialog() },
                 primaryActionText = stringResource(Res.string.btn_new_product),
-                primaryActionIcon = Res.drawable.add,
-                onSecondaryActionClick = { println("Import/Export products clicked") },
-                secondaryActionText = stringResource(Res.string.btn_import_export),
-                secondaryActionIcon = Res.drawable.upload_file
+                primaryActionIcon = Res.drawable.add
             )
 
             SearchField(

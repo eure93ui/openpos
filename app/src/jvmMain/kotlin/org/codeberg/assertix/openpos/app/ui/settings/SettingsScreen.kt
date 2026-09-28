@@ -6,6 +6,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
 import org.codeberg.assertix.openpos.app.ui.components.*
 import org.codeberg.assertix.openpos.app.ui.toImage
 import org.codeberg.assertix.openpos.data.model.TaxRate
@@ -14,6 +18,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.io.path.Path
 
 enum class SettingsTab(
     val titleRes: StringResource,
@@ -28,6 +33,32 @@ enum class SettingsTab(
 fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
     val state by viewModel.uiState.collectAsState()
     var selectedTab by remember { mutableStateOf(SettingsTab.CompanyProfile) }
+
+    val importLauncher = rememberFilePickerLauncher(
+        type = FileKitType.File(
+            extensions = listOf("sqlite", "sqlite3", "db")
+        )
+    ) { platformFile ->
+        platformFile?.file?.path?.let { pathString ->
+            viewModel.importDatabase(Path(pathString))
+        }
+    }
+
+    val exportDataLauncher = rememberFileSaverLauncher(
+        dialogSettings = FileKitDialogSettings.createDefault()
+    ) { platformFile ->
+        platformFile?.file?.path?.let { pathString ->
+            viewModel.exportDatabase(Path(pathString))
+        }
+    }
+
+    val exportSchemaLauncher = rememberFileSaverLauncher(
+        dialogSettings = FileKitDialogSettings.createDefault()
+    ) { platformFile ->
+        platformFile?.file?.path?.let { pathString ->
+            viewModel.exportEmptySchema(Path(pathString))
+        }
+    }
 
     AppScreenContainer(
         notificationMessage = state.errorMessage ?: if (state.saveSuccess) stringResource(Res.string.invoice_saved) else null,
@@ -82,7 +113,12 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
 
             when (selectedTab) {
                 SettingsTab.CompanyProfile -> CompanyProfileTabContent(state, viewModel)
-                SettingsTab.DatabaseHardware -> DatabaseHardwareTabContent(state)
+                SettingsTab.DatabaseHardware -> DatabaseHardwareTabContent(
+                    state = state,
+                    onImport = { importLauncher.launch() },
+                    onExportData = { exportDataLauncher.launch(suggestedName = "openpos_data", defaultExtension = "sqlite") },
+                    onExportSchema = { exportSchemaLauncher.launch(suggestedName = "openpos_schema_empty", defaultExtension = "sqlite") }
+                )
                 SettingsTab.FinancialConstants -> FinancialConstantsTabContent(state, viewModel)
             }
     }
@@ -167,7 +203,12 @@ private fun CompanyProfileTabContent(
 }
 
 @Composable
-private fun DatabaseHardwareTabContent(state: SettingsUiState) {
+private fun DatabaseHardwareTabContent(
+    state: SettingsUiState,
+    onImport: () -> Unit,
+    onExportData: () -> Unit,
+    onExportSchema: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -184,12 +225,30 @@ private fun DatabaseHardwareTabContent(state: SettingsUiState) {
             }
 
             OutlinedButton(
-                onClick = { println("Switch Database clicked") },
+                onClick = onImport,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Res.drawable.upload_file.toImage()
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(Res.string.btn_import_db))
+            }
+
+            OutlinedButton(
+                onClick = onExportData,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Res.drawable.save.toImage()
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(Res.string.btn_export_db))
+            }
+
+            OutlinedButton(
+                onClick = onExportSchema,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Res.drawable.database.toImage()
                 Spacer(Modifier.width(8.dp))
-                Text(stringResource(Res.string.btn_switch_db))
+                Text(stringResource(Res.string.btn_export_empty_db))
             }
         }
 

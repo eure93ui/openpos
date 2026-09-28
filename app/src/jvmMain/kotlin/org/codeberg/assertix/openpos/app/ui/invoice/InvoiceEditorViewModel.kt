@@ -4,6 +4,8 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,9 +20,13 @@ import org.codeberg.assertix.openpos.data.model.invoice.Invoice
 import org.codeberg.assertix.openpos.data.model.invoice.InvoiceItem
 import org.codeberg.assertix.openpos.data.model.invoice.InvoiceStatus
 import org.codeberg.assertix.openpos.database.api.repository.ClientRepository
+import org.codeberg.assertix.openpos.database.api.repository.CompanyProfileRepository
 import org.codeberg.assertix.openpos.database.api.repository.finance.FinancialRepository
 import org.codeberg.assertix.openpos.database.api.repository.InvoiceRepository
 import org.codeberg.assertix.openpos.database.api.repository.ItemsRepository
+import org.codeberg.assertix.openpos.reporting.engine.PebbleTemplateEngine
+import org.codeberg.assertix.openpos.reporting.printing.OpenHtmlToPdfConverter
+import org.codeberg.assertix.openpos.reporting.rendering.PebbleReportRenderer
 import java.math.BigDecimal
 
 @Stable
@@ -29,11 +35,12 @@ class InvoiceEditorViewModel(
     private val clientRepository: ClientRepository,
     private val itemsRepository: ItemsRepository,
     private val financialRepository: FinancialRepository,
+    private val companyProfileRepository: CompanyProfileRepository,
     initialInvoiceId: Int? = null
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(InvoiceEditorUiState())
-    val uiState: StateFlow<InvoiceEditorUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<InvoiceEditorUiState>
+        field = MutableStateFlow(InvoiceEditorUiState())
 
     private var clientSearchJob: Job? = null
     private var productSearchJob: Job? = null
@@ -51,7 +58,7 @@ class InvoiceEditorViewModel(
         viewModelScope.launch {
             val invoice = invoiceRepository.getById(id)
             if (invoice != null) {
-                _uiState.update {
+                uiState.update {
                     it.copy(
                         invoiceId = invoice.id,
                         invoiceNumber = invoice.invoiceNumber,
@@ -74,7 +81,7 @@ class InvoiceEditorViewModel(
             delay(300L)
             try {
                 val clients = clientRepository.getClients(20, 0, query)
-                _uiState.update { it.copy(clients = clients) }
+                uiState.update { it.copy(clients = clients) }
             } catch (e: Exception) {
                 // Ignore or handle
             }
@@ -82,7 +89,7 @@ class InvoiceEditorViewModel(
     }
 
     fun setClientSearchQuery(query: String) {
-        _uiState.update {
+        uiState.update {
             it.copy(
                 clientSearchQuery = query,
                 selectedClient = null,
@@ -95,7 +102,7 @@ class InvoiceEditorViewModel(
             delay(300L)
             try {
                 val clients = clientRepository.getClients(20, 0, query)
-                _uiState.update { it.copy(clients = clients) }
+                uiState.update { it.copy(clients = clients) }
             } catch (e: Exception) {
                 // Ignore or handle
             }
@@ -103,14 +110,14 @@ class InvoiceEditorViewModel(
     }
 
     fun setClientDropdownExpanded(expanded: Boolean) {
-        _uiState.update { it.copy(isClientDropdownExpanded = expanded) }
-        if (expanded && _uiState.value.clients.isEmpty()) {
+        uiState.update { it.copy(isClientDropdownExpanded = expanded) }
+        if (expanded && uiState.value.clients.isEmpty()) {
             loadClients("")
         }
     }
 
     fun updateClient(client: Client) {
-        _uiState.update {
+        uiState.update {
             it.copy(
                 selectedClient = client,
                 clientError = null,
@@ -122,7 +129,7 @@ class InvoiceEditorViewModel(
     }
 
     fun removeClient() {
-        _uiState.update {
+        uiState.update {
             it.copy(
                 selectedClient = null,
                 clientSearchQuery = "",
@@ -135,34 +142,34 @@ class InvoiceEditorViewModel(
     }
 
     fun setProductSearchQuery(query: String) {
-        _uiState.update { it.copy(productSearchQuery = query) }
+        uiState.update { it.copy(productSearchQuery = query) }
         productSearchJob?.cancel()
         if (query.isBlank()) {
-            _uiState.update { it.copy(searchResults = emptyList(), isProductDropdownExpanded = false) }
+            uiState.update { it.copy(searchResults = emptyList(), isProductDropdownExpanded = false) }
             return
         }
         productSearchJob = viewModelScope.launch {
             delay(300L)
             try {
                 val results = itemsRepository.getItems(20, 0, query)
-                _uiState.update {
+                uiState.update {
                     it.copy(
                         searchResults = results,
                         isProductDropdownExpanded = true
                     )
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(searchResults = emptyList(), isProductDropdownExpanded = false) }
+                uiState.update { it.copy(searchResults = emptyList(), isProductDropdownExpanded = false) }
             }
         }
     }
 
     fun hideProductDropdown() {
-        _uiState.update { it.copy(isProductDropdownExpanded = false) }
+        uiState.update { it.copy(isProductDropdownExpanded = false) }
     }
 
     fun showNewClientDialog(show: Boolean) {
-        _uiState.update { it.copy(isNewClientDialogVisible = show) }
+        uiState.update { it.copy(isNewClientDialogVisible = show) }
     }
 
     fun saveNewClient(name: String, surname: String, middleName: String, phone: String?) {
@@ -176,7 +183,7 @@ class InvoiceEditorViewModel(
                 val newId = clientRepository.add(newClient)
                 val createdClient = newClient.copy(id = newId)
                 loadClients()
-                _uiState.update {
+                uiState.update {
                     it.copy(
                         selectedClient = createdClient,
                         isNewClientDialogVisible = false,
@@ -185,13 +192,13 @@ class InvoiceEditorViewModel(
                     )
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(generalError = e.localizedMessage ?: "Не удалось сохранить клиента") }
+                uiState.update { it.copy(generalError = e.localizedMessage ?: "Не удалось сохранить клиента") }
             }
         }
     }
 
     fun showNewProductDialog(show: Boolean) {
-        _uiState.update { it.copy(isNewProductDialogVisible = show) }
+        uiState.update { it.copy(isNewProductDialogVisible = show) }
     }
 
     fun saveNewProduct(name: String, unit: String, priceStr: String) {
@@ -209,7 +216,7 @@ class InvoiceEditorViewModel(
 
                 addProduct(createdItem)
 
-                _uiState.update {
+                uiState.update {
                     it.copy(
                         isNewProductDialogVisible = false,
                         itemsError = null,
@@ -217,29 +224,29 @@ class InvoiceEditorViewModel(
                     )
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(generalError = e.localizedMessage ?: "Не удалось сохранить товар") }
+                uiState.update { it.copy(generalError = e.localizedMessage ?: "Не удалось сохранить товар") }
             }
         }
     }
 
     fun clearMessages() {
-        _uiState.update { it.copy(successMessage = null, generalError = null, clientError = null, itemsError = null) }
+        uiState.update { it.copy(successMessage = null, generalError = null, clientError = null, itemsError = null) }
     }
 
     fun updateVat(vat: Int) {
-        _uiState.update { it.copy(taxPercent = vat) }
+        uiState.update { it.copy(taxPercent = vat) }
     }
 
     fun updateNotes(notes: String) {
-        _uiState.update { it.copy(notes = notes) }
+        uiState.update { it.copy(notes = notes) }
     }
 
     fun updateStatus(status: InvoiceStatus) {
-        _uiState.update { it.copy(status = status) }
+        uiState.update { it.copy(status = status) }
     }
 
     fun updateIssueDate(date: String) {
-        _uiState.update { it.copy(issueDate = date) }
+        uiState.update { it.copy(issueDate = date) }
     }
 
     fun resetInvoice() {
@@ -248,7 +255,7 @@ class InvoiceEditorViewModel(
             val id = invoiceRepository.getNextId()
             val formattedId = formattedId(id, financialSettings.invoicePrefix)
 
-            _uiState.value = InvoiceEditorUiState(
+            uiState.value = InvoiceEditorUiState(
                 taxPercent = financialSettings.taxPercent,
                 invoiceNumber = formattedId
             )
@@ -256,7 +263,7 @@ class InvoiceEditorViewModel(
     }
 
     fun addProduct(item: Item) {
-        _uiState.update { state ->
+        uiState.update { state ->
             val existingIndex = state.items.indexOfFirst { it.itemId == item.id }
             val updatedItems = if (existingIndex >= 0) {
                 state.items.mapIndexed { index, invoiceItem ->
@@ -291,7 +298,7 @@ class InvoiceEditorViewModel(
 
     fun updateItemQuantity(itemId: Int, quantityStr: String) {
         val qty = quantityStr.toBigDecimalOrNull() ?: BigDecimal.ZERO
-        _uiState.update { state ->
+        uiState.update { state ->
             val updated = state.items.map { item ->
                 if (item.id == itemId) {
                     item.copy(
@@ -306,7 +313,7 @@ class InvoiceEditorViewModel(
 
     fun updateItemPrice(itemId: Int?, priceStr: String) {
         val price = priceStr.toBigDecimalOrNull() ?: BigDecimal.ZERO
-        _uiState.update { state ->
+        uiState.update { state ->
             val updated = state.items.map { item ->
                 if (item.id == itemId) {
                     item.copy(
@@ -320,13 +327,13 @@ class InvoiceEditorViewModel(
     }
 
     fun removeItem(itemId: Int?) {
-        _uiState.update { state ->
+        uiState.update { state ->
             state.copy(items = state.items.filter { it.id != itemId })
         }
     }
 
     fun validate(): Boolean {
-        val state = _uiState.value
+        val state = uiState.value
         var isValid = true
         var clientErr: String? = null
         var itemsErr: String? = null
@@ -344,7 +351,7 @@ class InvoiceEditorViewModel(
             isValid = false
         }
 
-        _uiState.update {
+        uiState.update {
             it.copy(
                 clientError = clientErr,
                 itemsError = itemsErr
@@ -357,9 +364,9 @@ class InvoiceEditorViewModel(
         if (!validate()) return
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isSaving = true) }
+            uiState.update { it.copy(isSaving = true) }
             try {
-                val state = _uiState.value
+                val state = uiState.value
                 val finalInvoice = if (status != null) {
                     state.toInvoice().copy(status = status)
                 } else {
@@ -371,7 +378,7 @@ class InvoiceEditorViewModel(
                 } else {
                     invoiceRepository.add(finalInvoice)
                 }
-                _uiState.update {
+                uiState.update {
                     it.copy(
                         isSaving = false,
                         successMessage = "Накладная успешно сохранена",
@@ -380,7 +387,7 @@ class InvoiceEditorViewModel(
                 }
                 onSuccess(finalInvoice)
             } catch (e: Exception) {
-                _uiState.update { it.copy(isSaving = false, generalError = e.localizedMessage ?: "Ошибка сохранения") }
+                uiState.update { it.copy(isSaving = false, generalError = e.localizedMessage ?: "Ошибка сохранения") }
             }
         }
     }
@@ -389,11 +396,128 @@ class InvoiceEditorViewModel(
         commitAndSave(status = null)
     }
 
-    fun printInvoice(onPrint: (Invoice) -> Unit) {
-        commitAndSave(status = null, onSuccess = onPrint)
+    private val reportRenderer = PebbleReportRenderer(PebbleTemplateEngine())
+    private val pdfConverter = OpenHtmlToPdfConverter()
+
+    private suspend fun generatePdfBytes(invoice: Invoice): ByteArray {
+        val companyProfile = try {
+            companyProfileRepository.get()
+        } catch (e: Exception) {
+            null
+        }
+        val html = reportRenderer.renderWaybill(invoice, companyProfile)
+        return pdfConverter.htmlToPdfBytes(html)
     }
 
-    fun exportPdf(onExport: (Invoice) -> Unit) {
-        commitAndSave(status = null, onSuccess = onExport)
+    fun printActive() {
+        commitAndSave(status = null) { invoice ->
+            viewModelScope.launch {
+                uiState.update { it.copy(isPdfProcessing = true) }
+                try {
+                    val pdfBytes = withContext(Dispatchers.IO) {
+                        generatePdfBytes(invoice)
+                    }
+                    withContext(Dispatchers.IO) {
+                        pdfConverter.printPdf(pdfBytes)
+                    }
+                    uiState.update {
+                        it.copy(
+                            isPdfProcessing = false,
+                            successMessage = "Накладная отправлена на печать"
+                        )
+                    }
+                } catch (e: Exception) {
+                    uiState.update {
+                        it.copy(
+                            isPdfProcessing = false,
+                            generalError = e.localizedMessage ?: "Ошибка печати"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun printExternal() {
+        commitAndSave(status = null) { invoice ->
+            viewModelScope.launch {
+                uiState.update { it.copy(isPdfProcessing = true) }
+                try {
+                    val pdfBytes = withContext(Dispatchers.IO) {
+                        generatePdfBytes(invoice)
+                    }
+                    withContext(Dispatchers.IO) {
+                        pdfConverter.openPdfExternal(pdfBytes)
+                    }
+                    uiState.update { it.copy(isPdfProcessing = false) }
+                } catch (e: Exception) {
+                    uiState.update {
+                        it.copy(
+                            isPdfProcessing = false,
+                            generalError = e.localizedMessage ?: "Ошибка открытия PDF"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun openPreview() {
+        commitAndSave(status = null) { invoice ->
+            viewModelScope.launch {
+                uiState.update { it.copy(isPdfProcessing = true) }
+                try {
+                    val pdfBytes = withContext(Dispatchers.IO) {
+                        generatePdfBytes(invoice)
+                    }
+                    val images = withContext(Dispatchers.IO) {
+                        pdfConverter.pdfToImages(pdfBytes, dpi = 150f)
+                    }
+                    uiState.update {
+                        it.copy(
+                            isPdfProcessing = false,
+                            isPdfPreviewVisible = true,
+                            previewImages = images
+                        )
+                    }
+                } catch (e: Exception) {
+                    println(e)
+                    uiState.update {
+                        it.copy(
+                            isPdfProcessing = false,
+                            generalError = e.localizedMessage ?: "Ошибка предпросмотра PDF"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun closePreview() {
+        uiState.update { it.copy(isPdfPreviewVisible = false, previewImages = emptyList()) }
+    }
+
+    fun exportPdf(path: java.nio.file.Path) {
+        commitAndSave(status = null) { invoice ->
+            viewModelScope.launch {
+                uiState.update { it.copy(isPdfProcessing = true) }
+                try {
+                    val pdfBytes = withContext(Dispatchers.IO) {
+                        generatePdfBytes(invoice)
+                    }
+                    withContext(Dispatchers.IO) {
+                        java.nio.file.Files.write(path, pdfBytes)
+                    }
+                    uiState.update { it.copy(isPdfProcessing = false, successMessage = "PDF успешно экспортирован") }
+                } catch (e: Exception) {
+                    uiState.update {
+                        it.copy(
+                            isPdfProcessing = false,
+                            generalError = e.localizedMessage ?: "Ошибка экспорта PDF"
+                        )
+                    }
+                }
+            }
+        }
     }
 }

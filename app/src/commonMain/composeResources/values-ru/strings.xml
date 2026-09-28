@@ -65,6 +65,9 @@
     <string name="btn_save_settings">Сохранить настройки</string>
     <string name="active_db_path">Путь к активной базе данных SQLite</string>
     <string name="btn_switch_db">Сменить базу данных...</string>
+    <string name="btn_import_db">Импортировать базу данных SQLite...</string>
+    <string name="btn_export_db">Экспортировать данные в .sqlite...</string>
+    <string name="btn_export_empty_db">Экспортировать пустую схему .sqlite...</string>
     <string name="pos_printers">Печатающие устройства (POS / ККТ)</string>
     <string name="default_printer">Принтер чеков / накладных по умолчанию</string>
     <string name="status_paid">Оплачено</string>
@@ -122,4 +125,8 @@
     <string name="btn_reset">Сбросить</string>
     <string name="invoice_status_label">Статус</string>
     <string name="invoice_date_label">Дата выставления</string>
+    <string name="invoice_open_external">Открыть во внешнем приложении</string>
+    <string name="invoice_open_preview">Предпросмотр PDF</string>
+    <string name="preview_title">Предпросмотр PDF</string>
+    <string name="btn_close">Закрыть</string>
 </resources>

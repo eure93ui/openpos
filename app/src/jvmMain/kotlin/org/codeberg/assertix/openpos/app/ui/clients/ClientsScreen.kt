@@ -30,10 +30,7 @@ fun ClientsScreen(viewModel: ClientsViewModel = koinViewModel()) {
                 badgeText = "Всего: ${state.totalClients}",
                 onPrimaryActionClick = { viewModel.showAddDialog() },
                 primaryActionText = stringResource(Res.string.btn_new_client_action),
-                primaryActionIcon = Res.drawable.add,
-                onSecondaryActionClick = { println("Import/Export clicked") },
-                secondaryActionText = stringResource(Res.string.btn_import_export),
-                secondaryActionIcon = Res.drawable.upload_file
+                primaryActionIcon = Res.drawable.add
             )
 
             SearchField(

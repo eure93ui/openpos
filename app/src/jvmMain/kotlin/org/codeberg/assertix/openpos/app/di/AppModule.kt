@@ -50,10 +50,10 @@ val appModule = module {
     }
 
     viewModel { (invoiceId: Int?) ->
-        InvoiceEditorViewModel(get(), get(), get(), get(), invoiceId)
+        InvoiceEditorViewModel(get(), get(), get(), get(), get(), invoiceId)
     }
 
     viewModel {
-        SettingsViewModel(get(), get(), get())
+        SettingsViewModel(get(), get(), get(), get())
     }
 }

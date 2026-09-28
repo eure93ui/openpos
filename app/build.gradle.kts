@@ -30,7 +30,7 @@ kotlin {
             implementation(projects.calculations)
             implementation(projects.database)
             implementation(projects.data)
-            implementation(projects.printing)
+            implementation(projects.reporting)
         }
 
         commonMain.dependencies {
@@ -53,4 +53,16 @@ compose.desktop {
 
 compose.resources {
     packageOfResClass = "org.codeberg.assertix.openpos.resources"
+}
+
+tasks.named("compileKotlinJvm") {
+    dependsOn(":database:generateSchema")
+}
+
+tasks.named("copyNonXmlValueResourcesForCommonMain") {
+    dependsOn(":database:generateSchema")
+}
+
+tasks.named("prepareComposeResourcesTaskForCommonMain") {
+    dependsOn(":database:generateSchema")
 }
