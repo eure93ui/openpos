@@ -1,3 +1,5 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
@@ -48,6 +50,26 @@ compose.desktop {
         buildTypes.release.proguard {
             isEnabled = false
         }
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Rpm, TargetFormat.Msi)
+
+            packageName = "openpos"
+            packageVersion = "1.0.0"
+
+            vendor = "org.codeberg.assertix"
+            description = "Lightweight Mamdani Fuzzy Inference System"
+
+            windows {
+//                iconFile = project.file("src/main/resources/icon/icon.ico")
+                shortcut = true
+            }
+
+//            linux {
+//                iconFile = project.file("src/main/resources/icon/icon.png")
+//            }
+        }
+
     }
 }
 
