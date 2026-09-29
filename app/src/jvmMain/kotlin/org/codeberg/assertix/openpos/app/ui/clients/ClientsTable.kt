@@ -1,9 +1,19 @@
 package org.codeberg.assertix.openpos.app.ui.clients
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +26,14 @@ import org.codeberg.assertix.openpos.app.ui.components.EmptyStateView
 import org.codeberg.assertix.openpos.app.ui.components.PaginationBar
 import org.codeberg.assertix.openpos.app.ui.components.QuerySize
 import org.codeberg.assertix.openpos.data.model.Client
-import org.codeberg.assertix.openpos.resources.*
+import org.codeberg.assertix.openpos.resources.Res
+import org.codeberg.assertix.openpos.resources.delete
+import org.codeberg.assertix.openpos.resources.edit
+import org.codeberg.assertix.openpos.resources.group
+import org.codeberg.assertix.openpos.resources.tbl_actions
+import org.codeberg.assertix.openpos.resources.tbl_client_name
+import org.codeberg.assertix.openpos.resources.tbl_number
+import org.codeberg.assertix.openpos.resources.tbl_phone
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -89,7 +106,7 @@ internal fun ColumnScope.ClientsTable(
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                text = client.fullName.toString(),
+                                text = client.fullName.snapshot(),
                                 modifier = Modifier.weight(UiConstants.WeightNameColumnSmall),
                                 style = MaterialTheme.typography.bodyMedium
                             )

@@ -51,7 +51,7 @@ data class InvoiceEditorUiState(
             issueDate = LocalDate.parse(issueDate),
             updatedAt = LocalDateTime.now(),
             client = client,
-            clientNameSnapshot = "${client.fullName.name} ${client.fullName.surname}".trim(),
+            clientNameSnapshot = client.fullName.snapshot(),
             clientPhoneNumberSnapshot = client.phoneNumber?.value ?: "",
             taxRate = TaxRate.from(taxPercent),
             items = items,

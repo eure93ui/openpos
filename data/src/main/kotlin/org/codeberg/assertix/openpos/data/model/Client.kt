@@ -8,12 +8,17 @@ data class FullName(
     val surname: String,
     val middleName: String,
 ) {
-    override fun toString(): String = "$surname $name $middleName"
+    fun snapshot() = buildString {
+        append(surname, " ", name)
+        if (middleName.isNotBlank()) {
+            append(" ", middleName)
+        }
+    }.trim()
 }
 
 fun FullName.filter(query: String) =
     name.contains(query) ||
-        surname.contains(query) || middleName.contains(query)
+            surname.contains(query) || middleName.contains(query)
 
 @Serializable
 data class Client(

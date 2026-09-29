@@ -54,6 +54,7 @@ object InvoiceReportMapper {
                     "taxId" to companyProfile.companyCredentials.inn,
                     "kpp" to companyProfile.companyCredentials.kpp,
                     "address" to companyProfile.companyInfo.legalAddress,
+                    "phoneNumber" to companyProfile.companyInfo.phoneNumber.value
                 )
             } else {
                 mapOf(
