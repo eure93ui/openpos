@@ -2,6 +2,8 @@ package org.codeberg.assertix.openpos.app.ui.startup
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
+import com.russhwolf.settings.Settings
+import org.codeberg.assertix.openpos.app.TrialVerifier
 import org.codeberg.assertix.openpos.app.UpdatableAppWrapper
 import org.codeberg.assertix.openpos.app.settings.AppSettings
 import org.codeberg.assertix.openpos.app.ui.startup.StartupState.*
@@ -14,6 +16,13 @@ import org.koin.compose.koinInject
 
 @Composable
 fun StartupScreen() {
+    val settings = koinInject<Settings>()
+
+    val verifier = TrialVerifier(settings)
+    if (!verifier.isTrialActive()) {
+        return
+    }
+
     val appSettings = koinInject<AppSettings>()
     val rememberedDatabase by (appSettings.rememberedDatabase.collectAsState())
     val sessionHolder = koinInject<SessionHolder>()
