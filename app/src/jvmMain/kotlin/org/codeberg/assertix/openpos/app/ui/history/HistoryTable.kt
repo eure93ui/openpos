@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import org.codeberg.assertix.openpos.app.ui.UiConstants
 import org.codeberg.assertix.openpos.app.ui.components.ActionIconButton
 import org.codeberg.assertix.openpos.app.ui.components.AppTableHeaderRow
@@ -19,11 +20,13 @@ import org.codeberg.assertix.openpos.app.ui.components.StatusBadge
 import org.codeberg.assertix.openpos.data.model.invoice.Invoice
 import org.codeberg.assertix.openpos.resources.*
 import org.jetbrains.compose.resources.stringResource
+import java.math.BigDecimal
 
 @Composable
 internal fun ColumnScope.HistoryTable(
     invoices: List<Invoice>,
     totalInvoices: Long,
+    totalPrice: BigDecimal,
     currentPage: Int,
     querySize: QuerySize,
     isLoading: Boolean,
@@ -162,6 +165,27 @@ internal fun ColumnScope.HistoryTable(
         val startIndex = if (totalInvoices > 0) (currentPage - 1) * pageSizeVal + 1 else 0
         val endIndex = minOf(currentPage * pageSizeVal, totalInvoices.toInt())
         val showingText = "Показано $startIndex-$endIndex из $totalInvoices"
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = UiConstants.SurfaceVariantAlpha), thickness = UiConstants.DividerThicknessDefault)
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = UiConstants.TableRowHorizontalPadding, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Итого за выбранный период:",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = "$totalPrice ₽",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = UiConstants.SurfaceVariantAlpha), thickness = UiConstants.DividerThicknessDefault)
 
         PaginationBar(
             showingText = showingText,

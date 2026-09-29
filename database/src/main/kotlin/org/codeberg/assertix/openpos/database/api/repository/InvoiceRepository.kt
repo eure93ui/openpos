@@ -22,6 +22,7 @@ import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
+import java.math.BigDecimal
 import java.time.LocalDate
 
 class InvoiceRepository(
@@ -72,7 +73,7 @@ class InvoiceRepository(
         val invoiceJoinedClients =
             (InvoicesTable innerJoin ClientsTable)
                 .selectAll()
-                .orderBy(InvoicesTable.id to SortOrder.DESC)
+                .orderBy(InvoicesTable.id to SortOrder.ASC)
                 .toList()
 
         if (invoiceJoinedClients.isEmpty()) return emptyList()
@@ -136,12 +137,30 @@ class InvoiceRepository(
         query {
             val queryStr: String = searchQuery.trim().lowercase()
             val allInvoices: List<Invoice> = getAllInternal()
-            allInvoices.count { invoice ->
-                val matchesSearch = queryStr.isBlank() || invoice.filter(queryStr)
-                val matchesStartDate = startDate == null || !invoice.issueDate.isBefore(startDate)
-                val matchesEndDate = endDate == null || !invoice.issueDate.isAfter(endDate)
-                matchesSearch && matchesStartDate && matchesEndDate
-            }.toLong()
+            allInvoices
+                .count { invoice ->
+                    val matchesSearch = queryStr.isBlank() || invoice.filter(queryStr)
+                    val matchesStartDate = startDate == null || !invoice.issueDate.isBefore(startDate)
+                    val matchesEndDate = endDate == null || !invoice.issueDate.isAfter(endDate)
+                    matchesSearch && matchesStartDate && matchesEndDate
+                }.toLong()
+        }
+
+    suspend fun getTotalPrice(
+        searchQuery: String = "",
+        startDate: LocalDate? = null,
+        endDate: LocalDate? = null,
+    ): BigDecimal =
+        query {
+            val queryStr: String = searchQuery.trim().lowercase()
+            val allInvoices: List<Invoice> = getAllInternal()
+            allInvoices
+                .filter { invoice ->
+                    val matchesSearch = queryStr.isBlank() || invoice.filter(queryStr)
+                    val matchesStartDate = startDate == null || !invoice.issueDate.isBefore(startDate)
+                    val matchesEndDate = endDate == null || !invoice.issueDate.isAfter(endDate)
+                    matchesSearch && matchesStartDate && matchesEndDate
+                }.fold(BigDecimal.ZERO) { acc, invoice -> acc.add(invoice.totalPriceUnderTax) }
         }
 
     suspend fun delete(invoiceId: Int): Boolean =
