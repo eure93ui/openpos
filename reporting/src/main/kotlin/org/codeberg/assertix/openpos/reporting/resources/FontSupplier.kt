@@ -1,4 +1,4 @@
-package org.codeberg.assertix.openpos.reporting
+package org.codeberg.assertix.openpos.reporting.resources
 
 import com.openhtmltopdf.extend.FSSupplier
 

@@ -5,7 +5,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.printing.PDFPageable
 import org.apache.pdfbox.rendering.PDFRenderer
-import org.codeberg.assertix.openpos.reporting.interFontSupplier
+import org.codeberg.assertix.openpos.reporting.resources.interFontSupplier
 import java.awt.Desktop
 import java.awt.image.BufferedImage
 import java.awt.print.PrinterJob
