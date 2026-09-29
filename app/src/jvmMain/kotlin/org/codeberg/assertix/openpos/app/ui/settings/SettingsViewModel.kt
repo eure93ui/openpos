@@ -91,6 +91,15 @@ class SettingsViewModel(
     fun updateInn(value: String) { _uiState.update { it.copy(inn = value) } }
     fun updateKpp(value: String) { _uiState.update { it.copy(kpp = value) } }
     fun updateAddress(value: String) { _uiState.update { it.copy(address = value) } }
+    fun updatePhoneNumber(value: String) { _uiState.update { it.copy(phoneNumber = value) } }
+    fun updateCompanyType(type: CompanyType) {
+        _uiState.update {
+            it.copy(
+                companyType = type,
+                kpp = if (type == CompanyType.Individual) "" else it.kpp
+            )
+        }
+    }
     fun updateBankName(value: String) { _uiState.update { it.copy(bankName = value) } }
     fun updateBic(value: String) { _uiState.update { it.copy(bic = value) } }
     fun updateAccount(value: String) { _uiState.update { it.copy(account = value) } }
@@ -112,7 +121,7 @@ class SettingsViewModel(
                     ),
                     companyCredentials = CompanyCredentials(
                         inn = state.inn,
-                        kpp = state.kpp
+                        kpp = if (state.companyType == CompanyType.Individual) "" else state.kpp
                     ),
                     bankDetails = BankDetails(
                         bankName = state.bankName,

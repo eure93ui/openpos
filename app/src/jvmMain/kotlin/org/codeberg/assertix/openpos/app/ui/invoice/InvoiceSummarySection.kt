@@ -8,9 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.codeberg.assertix.openpos.app.ui.UiConstants
 import org.codeberg.assertix.openpos.resources.Res
+import org.codeberg.assertix.openpos.resources.amount_without_vat
 import org.codeberg.assertix.openpos.resources.invoice_total
 import org.codeberg.assertix.openpos.resources.notes_placeholder
-import org.codeberg.assertix.openpos.resources.subtotal
 import org.codeberg.assertix.openpos.resources.vat_rate
 import org.jetbrains.compose.resources.stringResource
 import java.math.BigDecimal
@@ -59,7 +59,7 @@ internal fun InvoiceSummarySection(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(stringResource(Res.string.subtotal), style = MaterialTheme.typography.bodyMedium)
+                    Text(stringResource(Res.string.amount_without_vat), style = MaterialTheme.typography.bodyMedium)
                     Text("$subtotal ₽", style = MaterialTheme.typography.bodyMedium)
                 }
 

@@ -28,6 +28,7 @@
     <string name="tbl_total">Сумма</string>
     <string name="search_product_placeholder">Поиск товара для добавления...</string>
     <string name="notes_placeholder">Примечания / Комментарии</string>
+    <string name="amount_without_vat">Сумма без НДС:</string>
     <string name="subtotal">Подытог:</string>
     <string name="vat_rate">Ставка НДС:</string>
     <string name="products_title">Товары</string>

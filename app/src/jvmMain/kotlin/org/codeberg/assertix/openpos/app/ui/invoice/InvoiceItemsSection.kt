@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import org.codeberg.assertix.openpos.app.ui.UiConstants
 import org.codeberg.assertix.openpos.app.ui.components.ActionIconButton
 import org.codeberg.assertix.openpos.app.ui.components.EmptyStateView
@@ -18,6 +19,7 @@ import org.codeberg.assertix.openpos.data.model.Item
 import org.codeberg.assertix.openpos.data.model.invoice.InvoiceItem
 import org.codeberg.assertix.openpos.resources.*
 import org.jetbrains.compose.resources.stringResource
+import java.math.BigDecimal
 
 @Composable
 internal fun InvoiceItemsSection(
@@ -26,6 +28,8 @@ internal fun InvoiceItemsSection(
     productSearchQuery: String,
     searchResults: List<Item>,
     isProductDropdownExpanded: Boolean,
+    subtotal: BigDecimal,
+    grandTotal: BigDecimal,
     onProductSearchQueryChange: (String) -> Unit,
     onSelectProduct: (Item) -> Unit,
     onUpdateQuantity: (Int, String) -> Unit,
@@ -212,6 +216,27 @@ internal fun InvoiceItemsSection(
                                 }
                             }
                         }
+                    }
+                }
+
+                // Amount without VAT and Total stats at the left of "new product" button
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(stringResource(Res.string.amount_without_vat), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("$subtotal ₽", style = MaterialTheme.typography.bodyMedium)
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(stringResource(Res.string.invoice_total), style = MaterialTheme.typography.labelMedium)
+                        Text("$grandTotal ₽", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
                     }
                 }
 

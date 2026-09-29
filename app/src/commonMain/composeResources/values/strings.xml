@@ -22,6 +22,7 @@
     <string name="tbl_total">Total</string>
     <string name="search_product_placeholder">Search product to append...</string>
     <string name="notes_placeholder">Notes / Comments</string>
+    <string name="amount_without_vat">Amount without VAT:</string>
     <string name="subtotal">Subtotal:</string>
     <string name="vat_rate">VAT Rate:</string>
     <string name="products_title">Products</string>
