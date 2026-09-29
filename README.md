@@ -1,1 +1,1 @@
-Point of Sale & Invoicing
+Desktop Point of Sale & Invoicing offline app

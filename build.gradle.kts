@@ -11,4 +11,8 @@ private val versionFile = layout.projectDirectory.file("version.txt")
 private val versionProvider = providers.fileContents(versionFile).asText.map { it.trim() }
 version = versionProvider.get()
 
+subprojects {
+    version = versionProvider.get()
+}
+
 project.group = "org.codeberg.assertix.openpos"

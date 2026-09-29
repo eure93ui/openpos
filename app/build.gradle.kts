@@ -1,3 +1,5 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
@@ -47,6 +49,21 @@ compose.desktop {
 
         buildTypes.release.proguard {
             isEnabled = false
+        }
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Rpm, TargetFormat.Msi)
+            includeAllModules = true
+
+            packageName = "openpos"
+            packageVersion = project.version.toString()
+
+            vendor = "org.codeberg.assertix"
+            description = "Desktop Point of Sale & Invoicing offline app"
+
+            windows {
+                shortcut = true
+            }
         }
     }
 }
