@@ -53,7 +53,14 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Rpm, TargetFormat.Msi)
-            includeAllModules = true
+            modules(
+                "java.desktop",
+                "java.logging",
+                "java.management",
+                "java.naming",
+                "java.sql",
+                "jdk.unsupported"
+            )
 
             packageName = "openpos"
             packageVersion = project.version.toString()
