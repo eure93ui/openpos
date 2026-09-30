@@ -1,19 +1,19 @@
 package org.codeberg.assertix.openpos.app.ui.history
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.codeberg.assertix.openpos.app.ui.components.*
+import org.codeberg.assertix.openpos.app.ui.components.AppScreenContainer
+import org.codeberg.assertix.openpos.app.ui.components.ScreenHeader
+import org.codeberg.assertix.openpos.app.ui.components.SearchField
 import org.codeberg.assertix.openpos.app.ui.toImage
 import org.codeberg.assertix.openpos.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -38,6 +38,10 @@ fun HistoryScreen(
         HistoryDateFilterOption.YEAR -> "Год"
         HistoryDateFilterOption.ALL -> "За все время"
         HistoryDateFilterOption.CUSTOM -> "Произвольный период"
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadInvoices()
     }
 
     if (showStartDatePicker) {
