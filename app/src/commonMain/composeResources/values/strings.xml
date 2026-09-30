@@ -42,6 +42,12 @@
     <string name="btn_export_history">Export History</string>
     <string name="search_history_placeholder">Search by invoice # or client...</string>
     <string name="period">Period</string>
+    <string name="filter_week">Week</string>
+    <string name="filter_month">Month</string>
+    <string name="filter_half_year">Half-year</string>
+    <string name="filter_year">Year</string>
+    <string name="filter_all">All time</string>
+    <string name="filter_custom">Custom period</string>
     <string name="tbl_invoice_number">Invoice #</string>
     <string name="tbl_date">Date</string>
     <string name="tbl_status">Status</string>

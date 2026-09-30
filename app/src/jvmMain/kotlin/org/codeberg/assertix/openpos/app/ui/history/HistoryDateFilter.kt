@@ -1,14 +1,22 @@
 package org.codeberg.assertix.openpos.app.ui.history
 
+import org.codeberg.assertix.openpos.resources.Res
+import org.codeberg.assertix.openpos.resources.filter_all
+import org.codeberg.assertix.openpos.resources.filter_custom
+import org.codeberg.assertix.openpos.resources.filter_half_year
+import org.codeberg.assertix.openpos.resources.filter_month
+import org.codeberg.assertix.openpos.resources.filter_week
+import org.codeberg.assertix.openpos.resources.filter_year
+import org.jetbrains.compose.resources.StringResource
 import java.time.LocalDate
 
-enum class HistoryDateFilterOption(val labelKey: String) {
-    WEEK("Неделя"),
-    MONTH("Месяц"),
-    HALF_YEAR("Полугодие"),
-    YEAR("Год"),
-    ALL("За все время"),
-    CUSTOM("Произвольный период")
+enum class HistoryDateFilterOption(val labelRes: StringResource) {
+    WEEK(Res.string.filter_week),
+    MONTH(Res.string.filter_month),
+    HALF_YEAR(Res.string.filter_half_year),
+    YEAR(Res.string.filter_year),
+    ALL(Res.string.filter_all),
+    CUSTOM(Res.string.filter_custom)
 }
 
 data class DateRange(
