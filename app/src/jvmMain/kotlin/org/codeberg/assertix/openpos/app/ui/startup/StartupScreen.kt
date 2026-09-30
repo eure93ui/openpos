@@ -35,6 +35,12 @@ fun StartupScreen() {
         )
     }
 
+    LaunchedEffect(rememberedDatabase) {
+        if (rememberedDatabase == null) {
+            startupState = Selecting
+        }
+    }
+
     val currentState = startupState
     if (currentState is Ready) {
         if (!sessionHolder.isInitialized) {

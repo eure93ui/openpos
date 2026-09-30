@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.codeberg.assertix.openpos.app.ui.settings.SettingsTab
 import org.codeberg.assertix.openpos.app.ui.toImage
 import org.codeberg.assertix.openpos.database.api.DatabaseSavingState
 import org.codeberg.assertix.openpos.database.api.SessionInfo
@@ -89,7 +90,7 @@ fun AppSidebar(
                 )
                 NavigationRailItem(
                     selected = currentScreen is Screen.Settings,
-                    onClick = { onNavigate(Screen.Settings) },
+                    onClick = { onNavigate(Screen.Settings(SettingsTab.CompanyProfile)) },
                     icon = {
                         Res.drawable.settings.toImage()
                     },
@@ -98,7 +99,7 @@ fun AppSidebar(
             }
 
             Surface(
-                onClick = { println("Switch DB clicked") },
+                onClick = { onNavigate(Screen.Settings(SettingsTab.DatabaseHardware)) },
                 shape = MaterialTheme.shapes.small,
                 color = MaterialTheme.colorScheme.secondaryContainer,
                 modifier = Modifier.padding(4.dp).fillMaxWidth()

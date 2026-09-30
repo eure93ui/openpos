@@ -191,4 +191,16 @@ class SettingsViewModel(
             }
         }
     }
+
+    fun switchDatabase() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+                sessionHolder.close()
+                appSettings.clearRememberedDatabase()
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
+            }
+        }
+    }
 }
