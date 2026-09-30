@@ -32,9 +32,12 @@ enum class SettingsTab(
 }
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
+fun SettingsScreen(
+    initialTab: SettingsTab = SettingsTab.CompanyProfile,
+    viewModel: SettingsViewModel = koinViewModel()
+) {
     val state by viewModel.uiState.collectAsState()
-    var selectedTab by remember { mutableStateOf(SettingsTab.CompanyProfile) }
+    var selectedTab by remember { mutableStateOf(initialTab) }
 
     val importLauncher = rememberFilePickerLauncher(
         type = FileKitType.File(
@@ -119,7 +122,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
                     state = state,
                     onImport = { importLauncher.launch() },
                     onExportData = { exportDataLauncher.launch(suggestedName = "openpos_data", defaultExtension = "sqlite") },
-                    onExportSchema = { exportSchemaLauncher.launch(suggestedName = "openpos_schema_empty", defaultExtension = "sqlite") }
+                    onExportSchema = { exportSchemaLauncher.launch(suggestedName = "openpos_schema_empty", defaultExtension = "sqlite") },
+                    onSwitchDatabase = { viewModel.switchDatabase() }
                 )
                 SettingsTab.FinancialConstants -> FinancialConstantsTabContent(state, viewModel)
             }
@@ -264,7 +268,8 @@ private fun DatabaseHardwareTabContent(
     state: SettingsUiState,
     onImport: () -> Unit,
     onExportData: () -> Unit,
-    onExportSchema: () -> Unit
+    onExportSchema: () -> Unit,
+    onSwitchDatabase: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -279,6 +284,15 @@ private fun DatabaseHardwareTabContent(
                     label = stringResource(Res.string.active_db_path),
                     modifier = Modifier.fillMaxWidth()
                 )
+            }
+
+            OutlinedButton(
+                onClick = onSwitchDatabase,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Res.drawable.database.toImage()
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(Res.string.btn_switch_db))
             }
 
             OutlinedButton(

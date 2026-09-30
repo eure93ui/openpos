@@ -25,6 +25,11 @@ class AppSettings(private val settings: Settings) {
         rememberedDatabase.value = path
     }
 
+    fun clearRememberedDatabase() {
+        settings.remove(Keys.REMEMBERED_DATABASE)
+        rememberedDatabase.value = null
+    }
+
     val screenZoom: StateFlow<Float>
         field = MutableStateFlow(
             settings.getFloat(

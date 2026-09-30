@@ -46,7 +46,7 @@ fun App() {
                     onEditInvoice = { invoiceId -> currentScreen = Screen.Invoices(editInvoiceId = invoiceId) }
                 )
 
-                is Screen.Settings -> SettingsScreen()
+                is Screen.Settings -> SettingsScreen(initialTab = screen.initialTab)
             }
         }
     }
