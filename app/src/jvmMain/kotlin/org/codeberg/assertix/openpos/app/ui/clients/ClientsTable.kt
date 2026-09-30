@@ -111,7 +111,7 @@ internal fun ColumnScope.ClientsTable(
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
-                                text = client.phoneNumber?.let { "+${it.value}" } ?: "—",
+                                text = client.phoneNumber?.value ?: "—",
                                 modifier = Modifier.weight(UiConstants.WeightPhoneColumn),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = if (client.phoneNumber != null) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
