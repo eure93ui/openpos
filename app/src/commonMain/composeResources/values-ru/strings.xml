@@ -48,6 +48,12 @@
     <string name="btn_export_history">Экспорт истории</string>
     <string name="search_history_placeholder">Поиск по номеру накладной или клиенту...</string>
     <string name="period">Период</string>
+    <string name="filter_week">Неделя</string>
+    <string name="filter_month">Месяц</string>
+    <string name="filter_half_year">Полугодие</string>
+    <string name="filter_year">Год</string>
+    <string name="filter_all">За все время</string>
+    <string name="filter_custom">Произвольный период</string>
     <string name="tbl_invoice_number">№ Накладной</string>
     <string name="tbl_date">Дата</string>
     <string name="tbl_status">Статус</string>

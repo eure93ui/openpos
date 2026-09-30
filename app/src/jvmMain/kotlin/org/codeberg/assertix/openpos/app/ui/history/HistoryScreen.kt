@@ -31,14 +31,7 @@ fun HistoryScreen(
 
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
-    val periodDisplay = when (state.dateFilterOption) {
-        HistoryDateFilterOption.WEEK -> "Неделя"
-        HistoryDateFilterOption.MONTH -> "Месяц"
-        HistoryDateFilterOption.HALF_YEAR -> "Полугодие"
-        HistoryDateFilterOption.YEAR -> "Год"
-        HistoryDateFilterOption.ALL -> "За все время"
-        HistoryDateFilterOption.CUSTOM -> "Произвольный период"
-    }
+    val periodDisplay = stringResource(state.dateFilterOption.labelRes)
 
     LaunchedEffect(Unit) {
         viewModel.loadInvoices()
@@ -158,16 +151,8 @@ fun HistoryScreen(
                     onDismissRequest = { dateDropdownExpanded = false }
                 ) {
                     HistoryDateFilterOption.entries.forEach { option ->
-                        val label = when (option) {
-                            HistoryDateFilterOption.WEEK -> "Неделя"
-                            HistoryDateFilterOption.MONTH -> "Месяц"
-                            HistoryDateFilterOption.HALF_YEAR -> "Полугодие"
-                            HistoryDateFilterOption.YEAR -> "Год"
-                            HistoryDateFilterOption.ALL -> "За все время"
-                            HistoryDateFilterOption.CUSTOM -> "Произвольный период"
-                        }
                         DropdownMenuItem(
-                            text = { Text(label) },
+                            text = { Text(stringResource(option.labelRes)) },
                             onClick = {
                                 dateDropdownExpanded = false
                                 viewModel.setDateFilterOption(option)
