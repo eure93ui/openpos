@@ -34,6 +34,7 @@ internal fun InvoiceItemsSection(
     onSelectProduct: (Item) -> Unit,
     onUpdateQuantity: (Int, String) -> Unit,
     onUpdatePrice: (Int, String) -> Unit,
+    onUpdateMpn: (Int, String) -> Unit,
     onRemoveItem: (Int) -> Unit,
     onNewProductClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -50,6 +51,7 @@ internal fun InvoiceItemsSection(
                 modifier = Modifier.fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = UiConstants.SurfaceVariantAlpha), shape = MaterialTheme.shapes.small)
                     .padding(UiConstants.TableRowHorizontalPadding),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -57,6 +59,11 @@ internal fun InvoiceItemsSection(
                     modifier = Modifier.width(UiConstants.InvoiceNumberColumnWidth),
                     style = MaterialTheme.typography.labelMedium,
                     textAlign = TextAlign.Center
+                )
+                Text(
+                    stringResource(Res.string.tbl_mpn),
+                    modifier = Modifier.width(120.dp),
+                    style = MaterialTheme.typography.labelMedium
                 )
                 Text(
                     stringResource(Res.string.tbl_product_name),
@@ -99,10 +106,14 @@ internal fun InvoiceItemsSection(
                         description = stringResource(Res.string.invoice_empty_desc)
                     )
                 } else {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        itemsIndexed(items) { index, item ->
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        itemsIndexed(items, key = { _, item -> item.id }) { index, item ->
                             Row(
                                 modifier = Modifier.fillMaxWidth().padding(horizontal = UiConstants.TableRowHorizontalPadding, vertical = UiConstants.InvoiceItemRowVerticalPadding),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
@@ -111,6 +122,16 @@ internal fun InvoiceItemsSection(
                                     style = MaterialTheme.typography.bodyMedium,
                                     textAlign = TextAlign.Center
                                 )
+                                Box(modifier = Modifier.width(120.dp), contentAlignment = Alignment.CenterStart) {
+                                    OutlinedTextField(
+                                        value = item.mpnSnapshot ?: "",
+                                        onValueChange = { onUpdateMpn(item.id, it) },
+                                        modifier = Modifier.width(120.dp),
+                                        singleLine = true,
+                                        shape = MaterialTheme.shapes.small,
+                                        textStyle = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                                 Text(
                                     text = item.productNameSnapshot,
                                     modifier = Modifier.weight(UiConstants.WeightNameColumnLarge),
@@ -208,9 +229,10 @@ internal fun InvoiceItemsSection(
                             color = MaterialTheme.colorScheme.surface
                         ) {
                             LazyColumn(modifier = Modifier.fillMaxWidth().padding(UiConstants.SpacingTiny)) {
-                                items(searchResults) { product ->
+                                items(searchResults, key = { product -> product.id }) { product ->
+                                    val prefix = if (!product.mpn.isNullOrBlank()) "[${product.mpn}] " else ""
                                     DropdownMenuItem(
-                                        text = { Text("${product.productName} — ${product.defaultPrice} ₽ (${product.unitOfMeasure})") },
+                                        text = { Text("$prefix${product.productName} — ${product.defaultPrice} ₽ (${product.unitOfMeasure})") },
                                         onClick = { onSelectProduct(product) }
                                     )
                                 }

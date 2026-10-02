@@ -11,4 +11,5 @@ fun ResultRow.toItem() =
         productName = this[ItemsTable.productName],
         unitOfMeasure = this[ItemsTable.unitOfMeasure],
         defaultPrice = BigDecimal(this[ItemsTable.defaultPrice]),
+        mpn = this[ItemsTable.mpn],
     )

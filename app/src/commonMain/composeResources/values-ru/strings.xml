@@ -104,8 +104,10 @@
     <string name="item_dialog_new">Новый товар</string>
     <string name="item_dialog_edit">Редактировать товар</string>
     <string name="item_name_label">Наименование товара *</string>
+    <string name="item_mpn_label">Артикул (MPN)</string>
     <string name="item_unit_label">Единица измерения * (например, шт, кг, л)</string>
     <string name="item_price_label">Цена по умолчанию * (например, 150.00)</string>
+    <string name="tbl_mpn">Артикул</string>
     <string name="btn_save">Сохранить</string>
     <string name="btn_cancel">Отмена</string>
     <string name="btn_ok">OK</string>

@@ -85,7 +85,7 @@ internal fun InvoiceClientSection(
                     color = MaterialTheme.colorScheme.surface
                 ) {
                     LazyColumn(modifier = Modifier.fillMaxWidth().padding(UiConstants.SpacingTiny)) {
-                        items(clients) { client ->
+                        items(clients, key = { client -> client.id }) { client ->
                             DropdownMenuItem(
                                 text = { Text("${client.fullName.surname} ${client.fullName.name} — ${client.phoneNumber?.value ?: "—"}") },
                                 onClick = { onSelectClient(client) }

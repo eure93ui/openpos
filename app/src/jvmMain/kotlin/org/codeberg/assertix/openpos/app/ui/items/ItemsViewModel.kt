@@ -134,7 +134,7 @@ class ItemsViewModel(private val itemsRepository: ItemsRepository) : ViewModel()
         _uiState.update { it.copy(isDeleteDialogVisible = false, itemToDelete = null) }
     }
 
-    fun saveItem(productName: String, unitOfMeasure: String, defaultPriceStr: String) {
+    fun saveItem(productName: String, mpnStr: String, unitOfMeasure: String, defaultPriceStr: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             try {
@@ -154,13 +154,16 @@ class ItemsViewModel(private val itemsRepository: ItemsRepository) : ViewModel()
                     return@launch
                 }
 
+                val normalizedMpn = mpnStr.trim().ifBlank { null }
+
                 val editing = _uiState.value.editingItem
                 if (editing == null) {
                     val newItem = Item(
                         id = 0,
                         productName = productName.trim(),
                         unitOfMeasure = unitOfMeasure.trim(),
-                        defaultPrice = price
+                        defaultPrice = price,
+                        mpn = normalizedMpn
                     )
                     itemsRepository.add(newItem)
                     _uiState.update { it.copy(successMessage = "Товар успешно добавлен", isAddEditDialogVisible = false) }
@@ -169,7 +172,8 @@ class ItemsViewModel(private val itemsRepository: ItemsRepository) : ViewModel()
                         id = editing.id,
                         productName = productName.trim(),
                         unitOfMeasure = unitOfMeasure.trim(),
-                        defaultPrice = price
+                        defaultPrice = price,
+                        mpn = normalizedMpn
                     )
                     itemsRepository.update(updatedItem)
                     _uiState.update { it.copy(successMessage = "Товар успешно обновлен", isAddEditDialogVisible = false) }

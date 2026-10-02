@@ -117,7 +117,10 @@ internal fun ColumnScope.HistoryTable(
                     secondaryActionText = "Сбросить поиск"
                 )
             } else {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     itemsIndexed(invoices) { index, invoice ->
                         val pageSizeVal = querySize.size
                         val rowIndex = (currentPage - 1) * pageSizeVal + index + 1

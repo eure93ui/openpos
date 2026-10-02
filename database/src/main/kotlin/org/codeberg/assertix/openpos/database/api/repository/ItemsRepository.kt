@@ -6,8 +6,6 @@ import org.codeberg.assertix.openpos.database.api.repository.mapper.toItem
 import org.codeberg.assertix.openpos.database.model.ItemsTable
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.like
-import org.jetbrains.exposed.v1.core.or
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -25,6 +23,7 @@ class ItemsRepository(
                     it[productName] = item.productName
                     it[unitOfMeasure] = item.unitOfMeasure
                     it[defaultPrice] = item.defaultPrice.toPlainString()
+                    it[mpn] = item.mpn
                 }.value
         }
 
@@ -57,7 +56,8 @@ class ItemsRepository(
                     allItems.filter { item ->
                         val productName: String = item.productName.lowercase()
                         val unitOfMeasure: String = item.unitOfMeasure.lowercase()
-                        productName.contains(queryStr) || unitOfMeasure.contains(queryStr)
+                        val mpn: String = item.mpn?.lowercase() ?: ""
+                        productName.contains(queryStr) || unitOfMeasure.contains(queryStr) || mpn.contains(queryStr)
                     }
                 }
             filtered.drop(offset.toInt()).take(limit)
@@ -74,7 +74,8 @@ class ItemsRepository(
                     .count { item ->
                         val productName: String = item.productName.lowercase()
                         val unitOfMeasure: String = item.unitOfMeasure.lowercase()
-                        productName.contains(queryStr) || unitOfMeasure.contains(queryStr)
+                        val mpn: String = item.mpn?.lowercase() ?: ""
+                        productName.contains(queryStr) || unitOfMeasure.contains(queryStr) || mpn.contains(queryStr)
                     }.toLong()
             }
         }
@@ -87,6 +88,7 @@ class ItemsRepository(
                 it[productName] = item.productName
                 it[unitOfMeasure] = item.unitOfMeasure
                 it[defaultPrice] = item.defaultPrice.toPlainString()
+                it[mpn] = item.mpn
             } == ONE_CHANGED
         }
 

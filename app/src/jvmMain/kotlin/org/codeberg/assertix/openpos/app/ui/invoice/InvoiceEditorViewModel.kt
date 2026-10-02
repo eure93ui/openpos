@@ -201,15 +201,17 @@ class InvoiceEditorViewModel(
         uiState.update { it.copy(isNewProductDialogVisible = show) }
     }
 
-    fun saveNewProduct(name: String, unit: String, priceStr: String) {
+    fun saveNewProduct(name: String, mpnStr: String, unit: String, priceStr: String) {
         viewModelScope.launch {
             try {
                 val price = priceStr.toBigDecimalOrNull() ?: BigDecimal.ZERO
+                val normalizedMpn = mpnStr.trim().ifBlank { null }
                 val newItem = Item(
                     id = 0,
-                    productName = name,
-                    unitOfMeasure = unit,
-                    defaultPrice = price
+                    productName = name.trim(),
+                    unitOfMeasure = unit.trim(),
+                    defaultPrice = price,
+                    mpn = normalizedMpn
                 )
                 val newId = itemsRepository.add(newItem)
                 val createdItem = newItem.copy(id = newId)
@@ -283,7 +285,8 @@ class InvoiceEditorViewModel(
                     unitOfMeasureSnapshot = item.unitOfMeasure,
                     quantity = BigDecimal.ONE,
                     unitPrice = item.defaultPrice,
-                    totalPrice = item.defaultPrice
+                    totalPrice = item.defaultPrice,
+                    mpnSnapshot = item.mpn
                 )
             }
             state.copy(
@@ -320,6 +323,17 @@ class InvoiceEditorViewModel(
                         unitPrice = price,
                         totalPrice = item.quantity.multiply(price)
                     )
+                } else item
+            }
+            state.copy(items = updated, itemsError = null)
+        }
+    }
+
+    fun updateItemMpn(itemId: Int, mpnStr: String) {
+        uiState.update { state ->
+            val updated = state.items.map { item ->
+                if (item.id == itemId) {
+                    item.copy(mpnSnapshot = mpnStr)
                 } else item
             }
             state.copy(items = updated, itemsError = null)
