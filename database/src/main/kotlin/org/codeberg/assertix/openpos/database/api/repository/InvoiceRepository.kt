@@ -45,7 +45,8 @@ class InvoiceRepository(
                         it[totalPrice] = invoice.totalPrice.toPlainString()
                         it[totalPriceUnderTax] = invoice.totalPriceUnderTax.toPlainString()
                         it[status] = invoice.status
-                        it[notes] = invoice.notes
+                        it[printableNotes] = invoice.printableNotes
+                        it[internalNotes] = invoice.internalNotes
                     }.value
 
             saveInvoiceItems(invoiceId, invoice.items)
@@ -182,7 +183,8 @@ class InvoiceRepository(
                 it[totalPrice] = invoice.totalPrice.toPlainString()
                 it[totalPriceUnderTax] = invoice.totalPriceUnderTax.toPlainString()
                 it[status] = invoice.status
-                it[notes] = invoice.notes
+                it[printableNotes] = invoice.printableNotes
+                it[internalNotes] = invoice.internalNotes
             }
 
             InvoiceItemsTable.deleteWhere { InvoiceItemsTable.invoice eq invoice.id }

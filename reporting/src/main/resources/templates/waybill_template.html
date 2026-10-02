@@ -243,6 +243,12 @@
         </tr>
     </table>
 
+    {% if invoice.printableNotes is not empty %}
+    <div style="font-size: 7.5pt; margin-top: 3px; margin-bottom: 5px; padding: 2px 4px; border: 1px solid #aaa; background-color: #fcfcfc;">
+        <strong>Примечание:</strong> {{ invoice.printableNotes }}
+    </div>
+    {% endif %}
+
     <!-- Таблица товарных позиций -->
     <table class="items-table">
         <thead>

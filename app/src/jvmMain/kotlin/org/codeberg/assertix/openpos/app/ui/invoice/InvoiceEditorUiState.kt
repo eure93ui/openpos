@@ -30,7 +30,9 @@ data class InvoiceEditorUiState(
     val isNewProductDialogVisible: Boolean = false,
     val items: List<InvoiceItem> = listOf(),
     val taxPercent: Int = 20,
-    val notes: String = "",
+    val printableNotes: String = "",
+    val internalNotes: String = "",
+    val isNotesScreenVisible: Boolean = false,
     val clientError: String? = null,
     val itemsError: String? = null,
     val generalError: String? = null,
@@ -58,7 +60,8 @@ data class InvoiceEditorUiState(
             totalPrice = subtotal,
             totalPriceUnderTax = grandTotal,
             status = status,
-            notes = notes.takeIf { it.isNotBlank() }
+            printableNotes = printableNotes.takeIf { it.isNotBlank() },
+            internalNotes = internalNotes.takeIf { it.isNotBlank() }
         )
     }
 }

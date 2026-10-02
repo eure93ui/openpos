@@ -22,7 +22,8 @@ data class Invoice(
     val totalPrice: BigDecimal,
     val totalPriceUnderTax: BigDecimal,
     val status: InvoiceStatus = InvoiceStatus.DRAFT,
-    val notes: String? = null,
+    val printableNotes: String? = null,
+    val internalNotes: String? = null,
 )
 
 fun Invoice.filter(query: String) =

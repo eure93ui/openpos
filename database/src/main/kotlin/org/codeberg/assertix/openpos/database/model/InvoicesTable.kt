@@ -14,5 +14,6 @@ object InvoicesTable : IntIdTable("invoices") {
     val totalPrice = text("total_price")
     val totalPriceUnderTax = text("total_price_under_tax")
     val status = enumerationByName("status", 10, InvoiceStatus::class)
-    val notes = text("notes").nullable()
+    val printableNotes = text("printable_notes").nullable()
+    val internalNotes = text("internal_notes").nullable()
 }

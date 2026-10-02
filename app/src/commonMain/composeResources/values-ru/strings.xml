@@ -138,4 +138,8 @@
     <string name="invoice_open_preview">Предпросмотр PDF</string>
     <string name="preview_title">Предпросмотр PDF</string>
     <string name="btn_close">Закрыть</string>
+    <string name="notes_screen_title">Заметки накладной</string>
+    <string name="printable_notes_label">Заметка для печати (видна клиенту)</string>
+    <string name="internal_notes_label">Внутренняя заметка (не печатается)</string>
+    <string name="btn_notes">Заметки</string>
 </resources>
