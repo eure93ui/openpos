@@ -13,9 +13,10 @@ import org.jetbrains.compose.resources.stringResource
 internal fun ItemDialog(
     item: Item?,
     onDismiss: () -> Unit,
-    onSave: (productName: String, unitOfMeasure: String, defaultPrice: String) -> Unit
+    onSave: (productName: String, mpn: String, unitOfMeasure: String, defaultPrice: String) -> Unit
 ) {
     var productName by remember { mutableStateOf(item?.productName ?: "") }
+    var mpn by remember { mutableStateOf(item?.mpn ?: "") }
     var unitOfMeasure by remember { mutableStateOf(item?.unitOfMeasure ?: "шт") }
     var defaultPrice by remember { mutableStateOf(item?.defaultPrice?.toPlainString() ?: "") }
 
@@ -31,6 +32,13 @@ internal fun ItemDialog(
                     value = productName,
                     onValueChange = { productName = it },
                     label = { Text(stringResource(Res.string.item_name_label)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = mpn,
+                    onValueChange = { mpn = it },
+                    label = { Text(stringResource(Res.string.item_mpn_label)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -52,7 +60,7 @@ internal fun ItemDialog(
         },
         confirmButton = {
             Button(
-                onClick = { onSave(productName, unitOfMeasure, defaultPrice) },
+                onClick = { onSave(productName, mpn, unitOfMeasure, defaultPrice) },
                 enabled = productName.isNotBlank() && unitOfMeasure.isNotBlank() && defaultPrice.isNotBlank()
             ) {
                 Text(stringResource(Res.string.btn_save))

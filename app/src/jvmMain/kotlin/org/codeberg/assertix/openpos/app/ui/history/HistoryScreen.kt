@@ -138,7 +138,7 @@ fun HistoryScreen(
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = dateDropdownExpanded)
                     },
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                    modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,

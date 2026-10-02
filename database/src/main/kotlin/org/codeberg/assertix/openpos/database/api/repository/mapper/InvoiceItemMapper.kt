@@ -14,4 +14,5 @@ fun ResultRow.toInvoiceItem() =
         quantity = BigDecimal(this[InvoiceItemsTable.quantity]),
         unitPrice = BigDecimal(this[InvoiceItemsTable.unitPrice]),
         totalPrice = BigDecimal(this[InvoiceItemsTable.totalPrice]),
+        mpnSnapshot = this[InvoiceItemsTable.mpnSnapshot],
     )

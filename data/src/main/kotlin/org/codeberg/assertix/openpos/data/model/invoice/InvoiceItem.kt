@@ -12,4 +12,5 @@ data class InvoiceItem(
     val quantity: BigDecimal,
     val unitPrice: BigDecimal,
     val totalPrice: BigDecimal,
+    val mpnSnapshot: String? = null,
 )

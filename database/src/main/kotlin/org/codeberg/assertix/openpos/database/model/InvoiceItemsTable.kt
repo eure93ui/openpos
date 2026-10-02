@@ -10,4 +10,5 @@ object InvoiceItemsTable : IntIdTable("invoice_items") {
     val quantity = text("quantity")
     val unitPrice = text("unit_price")
     val totalPrice = text("total_price")
+    val mpnSnapshot = text("mpn_snapshot").nullable()
 }

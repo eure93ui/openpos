@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import org.codeberg.assertix.openpos.app.ui.UiConstants
 import org.codeberg.assertix.openpos.app.ui.components.ActionIconButton
 import org.codeberg.assertix.openpos.app.ui.components.AppTableHeaderRow
@@ -41,6 +42,11 @@ internal fun ColumnScope.ItemsTable(
                 modifier = Modifier.width(UiConstants.NumberColumnWidth),
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Center
+            )
+            Text(
+                stringResource(Res.string.tbl_mpn),
+                modifier = Modifier.width(120.dp),
+                style = MaterialTheme.typography.labelMedium
             )
             Text(
                 stringResource(Res.string.tbl_product_name),
@@ -81,7 +87,10 @@ internal fun ColumnScope.ItemsTable(
                     secondaryActionText = "Сбросить поиск"
                 )
             } else {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     itemsIndexed(items) { index, item ->
                         val pageSizeVal = querySize.size
                         val rowIndex = (currentPage - 1) * pageSizeVal + index + 1
@@ -94,6 +103,12 @@ internal fun ColumnScope.ItemsTable(
                                 modifier = Modifier.width(UiConstants.NumberColumnWidth),
                                 style = MaterialTheme.typography.bodyMedium,
                                 textAlign = TextAlign.Center
+                            )
+                            Text(
+                                text = item.mpn ?: "—",
+                                modifier = Modifier.width(120.dp),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = if (item.mpn.isNullOrBlank()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurface
                             )
                             Text(
                                 text = item.productName,

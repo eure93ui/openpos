@@ -199,12 +199,13 @@ class InvoiceRepository(
             InvoiceItemsTable
                 .batchInsert(invoiceItems) { item ->
                     this[InvoiceItemsTable.invoice] = invoiceId
-                    this[InvoiceItemsTable.item] = item.id
+                    this[InvoiceItemsTable.item] = item.itemId
                     this[InvoiceItemsTable.productNameSnapshot] = item.productNameSnapshot
                     this[InvoiceItemsTable.unitOfMeasureSnapshot] = item.unitOfMeasureSnapshot
                     this[InvoiceItemsTable.quantity] = item.quantity.toPlainString()
                     this[InvoiceItemsTable.unitPrice] = item.unitPrice.toPlainString()
                     this[InvoiceItemsTable.totalPrice] = item.totalPrice.toPlainString()
+                    this[InvoiceItemsTable.mpnSnapshot] = item.mpnSnapshot
                 }.size
         }
 }

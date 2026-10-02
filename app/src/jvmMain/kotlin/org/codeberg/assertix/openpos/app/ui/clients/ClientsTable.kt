@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import org.codeberg.assertix.openpos.app.ui.UiConstants
 import org.codeberg.assertix.openpos.app.ui.components.ActionIconButton
 import org.codeberg.assertix.openpos.app.ui.components.AppTableHeaderRow
@@ -91,7 +92,10 @@ internal fun ColumnScope.ClientsTable(
                     secondaryActionText = "Сбросить поиск"
                 )
             } else {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     itemsIndexed(clients) { index, client ->
                         val pageSizeVal = querySize.size
                         val rowIndex = (currentPage - 1) * pageSizeVal + index + 1

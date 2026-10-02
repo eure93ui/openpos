@@ -98,8 +98,10 @@
     <string name="item_dialog_new">New Product</string>
     <string name="item_dialog_edit">Edit Product</string>
     <string name="item_name_label">Product Name *</string>
+    <string name="item_mpn_label">MPN (Manufacturer Part Number)</string>
     <string name="item_unit_label">Unit * (e.g. pcs, kg, l)</string>
     <string name="item_price_label">Default Price * (e.g. 150.00)</string>
+    <string name="tbl_mpn">MPN</string>
     <string name="btn_save">Save</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_ok">OK</string>

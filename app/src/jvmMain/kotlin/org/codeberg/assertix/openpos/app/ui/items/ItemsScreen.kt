@@ -59,8 +59,8 @@ fun ItemsScreen(viewModel: ItemsViewModel = koinViewModel()) {
         ItemDialog(
             item = state.editingItem,
             onDismiss = { viewModel.hideAddEditDialog() },
-            onSave = { name, unit, price ->
-                viewModel.saveItem(name, unit, price)
+            onSave = { name, mpn, unit, price ->
+                viewModel.saveItem(name, mpn, unit, price)
             }
         )
     }

@@ -9,4 +9,5 @@ data class Item(
     val productName: String,
     val unitOfMeasure: String,
     val defaultPrice: BigDecimal,
+    val mpn: String? = null,
 )

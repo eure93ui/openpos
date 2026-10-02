@@ -138,6 +138,7 @@ fun InvoiceEditorScreen(
             onSelectProduct = { viewModel.addProduct(it) },
             onUpdateQuantity = { id, qty -> viewModel.updateItemQuantity(id, qty) },
             onUpdatePrice = { id, price -> viewModel.updateItemPrice(id, price) },
+            onUpdateMpn = { id, mpn -> viewModel.updateItemMpn(id, mpn) },
             onRemoveItem = { viewModel.removeItem(it) },
             onNewProductClick = { viewModel.showNewProductDialog(true) }
         )
@@ -168,8 +169,8 @@ fun InvoiceEditorScreen(
         ItemDialog(
             item = null,
             onDismiss = { viewModel.showNewProductDialog(false) },
-            onSave = { name, unit, price ->
-                viewModel.saveNewProduct(name, unit, price)
+            onSave = { name, mpn, unit, price ->
+                viewModel.saveNewProduct(name, mpn, unit, price)
             }
         )
     }
