@@ -68,7 +68,8 @@ class InvoiceEditorViewModel(
                         selectedClient = invoice.client,
                         items = invoice.items,
                         taxPercent = invoice.taxRate.percent,
-                        notes = invoice.notes ?: ""
+                        printableNotes = invoice.printableNotes ?: "",
+                        internalNotes = invoice.internalNotes ?: ""
                     )
                 }
             }
@@ -239,8 +240,20 @@ class InvoiceEditorViewModel(
         uiState.update { it.copy(taxPercent = vat) }
     }
 
-    fun updateNotes(notes: String) {
-        uiState.update { it.copy(notes = notes) }
+    fun updatePrintableNotes(notes: String) {
+        uiState.update { it.copy(printableNotes = notes) }
+    }
+
+    fun updateInternalNotes(notes: String) {
+        uiState.update { it.copy(internalNotes = notes) }
+    }
+
+    fun showNotesScreen(show: Boolean) {
+        uiState.update { it.copy(isNotesScreenVisible = show) }
+    }
+
+    fun closeNotesScreen() {
+        uiState.update { it.copy(isNotesScreenVisible = false) }
     }
 
     fun updateStatus(status: InvoiceStatus) {

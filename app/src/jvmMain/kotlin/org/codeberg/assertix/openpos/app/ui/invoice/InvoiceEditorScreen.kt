@@ -93,6 +93,14 @@ fun InvoiceEditorScreen(
                 )
 
                 OutlinedButton(
+                    onClick = { viewModel.showNotesScreen(true) }
+                ) {
+                    Res.drawable.edit.toImage()
+                    Spacer(Modifier.width(4.dp))
+                    Text(stringResource(Res.string.btn_notes))
+                }
+
+                OutlinedButton(
                     { viewModel.save() },
                 ) {
                     val text = stringResource(Res.string.btn_save_settings)
@@ -145,14 +153,66 @@ fun InvoiceEditorScreen(
 
         // Footer Summary Section
         InvoiceSummarySection(
-            notes = state.notes,
             subtotal = state.subtotal,
             taxPercent = state.taxPercent,
             taxAmount = state.taxAmount,
             grandTotal = state.grandTotal,
-            onNotesChange = { viewModel.updateNotes(it) },
             onVatChange = { viewModel.updateVat(it) }
         )
+    }
+
+    if (state.isNotesScreenVisible) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(Res.string.notes_screen_title),
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    Button(onClick = { viewModel.closeNotesScreen() }) {
+                        Text(stringResource(Res.string.btn_close))
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    OutlinedTextField(
+                        value = state.printableNotes,
+                        onValueChange = { viewModel.updatePrintableNotes(it) },
+                        label = { Text(stringResource(Res.string.printable_notes_label)) },
+                        modifier = Modifier.fillMaxWidth().height(160.dp),
+                        maxLines = 6,
+                        shape = MaterialTheme.shapes.medium
+                    )
+
+                    OutlinedTextField(
+                        value = state.internalNotes,
+                        onValueChange = { viewModel.updateInternalNotes(it) },
+                        label = { Text(stringResource(Res.string.internal_notes_label)) },
+                        modifier = Modifier.fillMaxWidth().height(160.dp),
+                        maxLines = 6,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                }
+            }
+        }
     }
 
     if (state.isNewClientDialogVisible) {

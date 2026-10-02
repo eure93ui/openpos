@@ -132,4 +132,8 @@
     <string name="invoice_open_preview">PDF Preview</string>
     <string name="preview_title">PDF Preview</string>
     <string name="btn_close">Close</string>
+    <string name="notes_screen_title">Invoice Notes</string>
+    <string name="printable_notes_label">Printable Note (visible to client)</string>
+    <string name="internal_notes_label">Internal Note (not printed)</string>
+    <string name="btn_notes">Notes</string>
 </resources>

@@ -26,5 +26,6 @@ fun ResultRow.toInvoice(
     totalPrice = BigDecimal(this[InvoicesTable.totalPrice]),
     totalPriceUnderTax = BigDecimal(this[InvoicesTable.totalPriceUnderTax]),
     status = this[InvoicesTable.status],
-    notes = this[InvoicesTable.notes],
+    printableNotes = this[InvoicesTable.printableNotes],
+    internalNotes = this[InvoicesTable.internalNotes],
 )

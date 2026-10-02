@@ -45,6 +45,7 @@ object InvoiceReportMapper {
                         .setScale(2, RoundingMode.HALF_UP)
                         .stringRepresentation(Locale.getDefault().language)
                         .replaceFirstChar { it.uppercase() },
+                "printableNotes" to (invoice.printableNotes ?: ""),
             )
 
         val companyMap =

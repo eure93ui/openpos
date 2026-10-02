@@ -10,41 +10,27 @@ import org.codeberg.assertix.openpos.app.ui.UiConstants
 import org.codeberg.assertix.openpos.resources.Res
 import org.codeberg.assertix.openpos.resources.amount_without_vat
 import org.codeberg.assertix.openpos.resources.invoice_total
-import org.codeberg.assertix.openpos.resources.notes_placeholder
 import org.codeberg.assertix.openpos.resources.vat_rate
 import org.jetbrains.compose.resources.stringResource
 import java.math.BigDecimal
 
 @Composable
 internal fun InvoiceSummarySection(
-    notes: String,
     subtotal: BigDecimal,
     taxPercent: Int,
     taxAmount: BigDecimal,
     grandTotal: BigDecimal,
-    onNotesChange: (String) -> Unit,
     onVatChange: (Int) -> Unit
 ) {
     var vatExpanded by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.Bottom
     ) {
-        OutlinedTextField(
-            value = notes,
-            onValueChange = onNotesChange,
-            label = { Text(stringResource(Res.string.notes_placeholder)) },
-            modifier = Modifier.weight(UiConstants.WeightDefault).height(UiConstants.SummarySectionHeight),
-            maxLines = 3,
-            shape = MaterialTheme.shapes.medium
-        )
-
-        Spacer(Modifier.width(UiConstants.SpacingLarge))
-
         Surface(
-            modifier = Modifier.width(320.dp),
+            modifier = Modifier.width(360.dp),
             shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
             tonalElevation = UiConstants.TonalElevationLow
