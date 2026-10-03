@@ -111,11 +111,21 @@
             margin-top: 1px;
         }
 
+        /* Блок примечаний к накладной */
+        .printable-notes {
+            font-size: 7.5pt;
+            margin-top: 3px;
+            margin-bottom: 6px;
+            padding: 3px 5px;
+            border: 1px solid #aaa;
+            background-color: #fcfcfc;
+        }
+
         /* Таблица товарных позиций */
         table.items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         table.items-table th, table.items-table td {
@@ -131,7 +141,7 @@
             color: #111;
         }
 
-        /* Зебра для строк таблицы: существенно улучшает читаемость */
+        /* Зебра для строк таблицы */
         table.items-table tbody tr:nth-child(even) {
             background-color: #fafafa;
         }
@@ -151,18 +161,17 @@
         }
 
         table.summary-table td {
-            padding: 1.5px 3px;
-            font-size: 7.5pt;
+            padding: 2px 3px;
             font-variant-numeric: tabular-nums;
         }
 
         .total-row {
             font-size: 8.5pt !important;
             font-weight: bold;
-            border-top: 1px solid #000;
+            /* Линия сверху удалена */
         }
 
-        /* Сумма прописью с аккуратным обрамлением */
+        /* Сумма прописью */
         .amount-in-words {
             font-size: 7.5pt;
             font-weight: bold;
@@ -208,7 +217,7 @@
 <body>
 
 {# ========================================================================= #}
-{# REUSABLE PEBBLE MACRO: Renders one complete half of the waybill          #}
+{# REUSABLE PEBBLE MACRO: Renders one complete half of the waybill #}
 {# ========================================================================= #}
 {% macro halfSheet(invoice, company, copyTitle) %}
 <div class="half-sheet">
@@ -224,9 +233,8 @@
             <td>
                 <span class="party-name">{{ company.legalName }}</span>
                 <div class="party-details">
-                    ИНН: {{ company.taxId }}
-                    {% if company.phoneNumber is not empty %} • Тел: {{ company.phoneNumber }}{% elseif company.phone is not empty %} • Тел: {{ company.phone }}{% endif %}
-                    {% if company.legalAddress is not empty %}<br/>Адрес: {{ company.legalAddress }}{% elseif company.address is not empty %}<br/>Адрес: {{ company.address }}{% endif %}
+                    ИНН: {{ company.taxId }} {% if company.phoneNumber is not empty %} • Тел: {{ company.phoneNumber }}{% elseif company.phone is not empty %} • Тел: {{ company.phone }}{% endif %} {% if company.legalAddress is not empty %}<br/>Адрес: {{ company.legalAddress }}{% elseif
+                    company.address is not empty %}<br/>Адрес: {{ company.address }}{% endif %}
                 </div>
             </td>
         </tr>
@@ -238,13 +246,17 @@
                 <div class="party-details">
                     Тел: {{ invoice.clientPhoneNumberSnapshot }}
                 </div>
+                {% elseif invoice.clientPhoneSnapshot is not empty %}
+                <div class="party-details">
+                    Тел: {{ invoice.clientPhoneSnapshot }}
+                </div>
                 {% endif %}
             </td>
         </tr>
     </table>
 
     {% if invoice.printableNotes is not empty %}
-    <div style="font-size: 7.5pt; margin-top: 3px; margin-bottom: 5px; padding: 2px 4px; border: 1px solid #aaa; background-color: #fcfcfc;">
+    <div class="printable-notes">
         <strong>Примечание:</strong> {{ invoice.printableNotes }}
     </div>
     {% endif %}
@@ -275,36 +287,43 @@
         </tbody>
     </table>
 
-    <!-- Финансовые итоги -->
+    <!-- Финансовые итоги (без верхней полосы) -->
     <table class="summary-table">
         <tr class="total-row">
-            <td class="text-right">ИТОГО (в т.ч. НДС {{ invoice.taxRate.percent }}%):</td>
-            <td class="text-right" style="width: 25%;">{{ invoice.totalAmount }}</td>
+            <td class="text-right">
+                ИТОГО{% if invoice.taxRate.percent is not empty and invoice.taxRate.percent > 0 %} (в т.ч. НДС {{
+                invoice.taxRate.percent }}%){% endif %}:
+            </td>
+            <td class="text-right" style="width: 26%;">{{ invoice.totalAmount }}</td>
         </tr>
     </table>
 
     <!-- Сумма прописью -->
+    {% if invoice.invoiceAmountInWords is not empty %}
     <div class="amount-in-words">
         {{ invoice.invoiceAmountInWords }}
     </div>
+    {% endif %}
 
     <!-- Юридический дисклеймер -->
     <div class="disclaimer">
-        Товар надлежащего качества обмену и возврату не подлежит. Претензии по дефектам принимаются ТОЛЬКО до монтажа. Срок поставки заказных позиций — до 45 раб. дней. Подписью покупатель подтверждает получение товара и отсутствие претензий к внешнему виду.
+        Товар надлежащего качества обмену и возврату не подлежит. Претензии по дефектам принимаются ТОЛЬКО до монтажа.
+        Срок поставки заказных позиций — до 45 раб. дней. Подписью покупатель подтверждает получение товара и отсутствие
+        претензий к внешнему виду.
     </div>
 
     <!-- Подписи -->
     <table class="signature-table">
         <tr>
-            <td style="width: 50%;">Сдал: <span class="line"></span></td>
-            <td style="width: 50%;">Принял: <span class="line"></span></td>
+            <td style="width: 50%;">Отпустил: <span class="line"></span></td>
+            <td style="width: 50%;">Заказчик: <span class="line"></span></td>
         </tr>
     </table>
 </div>
 {% endmacro %}
 
 {# ========================================================================= #}
-{# MAIN PAGE LAYOUT: Two identical halves separated by the cut-line         #}
+{# MAIN PAGE LAYOUT: Two identical halves separated by the cut-line #}
 {# ========================================================================= #}
 <table class="page-layout">
     <tr>
