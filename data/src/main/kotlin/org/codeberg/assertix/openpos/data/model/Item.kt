@@ -8,6 +8,6 @@ data class Item(
     val id: Int,
     val productName: String,
     val unitOfMeasure: String,
-    val defaultPrice: BigDecimal,
+    val defaultPrice: BigDecimal?,
     val mpn: String? = null,
 )

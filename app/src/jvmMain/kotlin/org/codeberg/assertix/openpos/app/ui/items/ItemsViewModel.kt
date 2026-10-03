@@ -148,10 +148,15 @@ class ItemsViewModel(private val itemsRepository: ItemsRepository) : ViewModel()
                 }
 
                 val normalizedPriceStr = defaultPriceStr.trim().replace(',', '.')
-                val price = normalizedPriceStr.toBigDecimalOrNull()
-                if (price == null || price < BigDecimal.ZERO) {
-                    _uiState.update { it.copy(isLoading = false, errorMessage = "Некорректная цена по умолчанию") }
-                    return@launch
+                val price = if (normalizedPriceStr.isBlank()) {
+                    null
+                } else {
+                    val p = normalizedPriceStr.toBigDecimalOrNull()
+                    if (p == null || p < BigDecimal.ZERO) {
+                        _uiState.update { it.copy(isLoading = false, errorMessage = "Некорректная цена по умолчанию") }
+                        return@launch
+                    }
+                    p
                 }
 
                 val normalizedMpn = mpnStr.trim().ifBlank { null }

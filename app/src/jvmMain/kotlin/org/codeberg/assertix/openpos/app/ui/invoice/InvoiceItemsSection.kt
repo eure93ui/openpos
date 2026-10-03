@@ -231,8 +231,9 @@ internal fun InvoiceItemsSection(
                             LazyColumn(modifier = Modifier.fillMaxWidth().padding(UiConstants.SpacingTiny)) {
                                 items(searchResults, key = { product -> product.id }) { product ->
                                     val prefix = if (!product.mpn.isNullOrBlank()) "[${product.mpn}] " else ""
+                                    val priceStr = product.defaultPrice?.let { "$it ₽" } ?: "—"
                                     DropdownMenuItem(
-                                        text = { Text("$prefix${product.productName} — ${product.defaultPrice} ₽ (${product.unitOfMeasure})") },
+                                        text = { Text("$prefix${product.productName} — $priceStr (${product.unitOfMeasure})") },
                                         onClick = { onSelectProduct(product) }
                                     )
                                 }

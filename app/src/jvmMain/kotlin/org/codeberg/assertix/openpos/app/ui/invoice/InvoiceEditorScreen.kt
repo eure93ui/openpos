@@ -53,7 +53,7 @@ fun InvoiceEditorScreen(
         ScreenHeader(
             title = if (state.isExisting) state.invoiceNumber else stringResource(Res.string.invoice_title),
             badgeText = if (state.isExisting) state.issueDate else "${state.invoiceNumber} | ${state.issueDate}",
-            onReturnClick = if (state.isExisting) onReturn else null,
+            onResetClick = { showResetConfirmation = true },
             onSecondaryActionClick = {
                 fileSaverLauncher.launch(
                     suggestedName = "invoice_${state.invoiceNumber}",
@@ -76,21 +76,12 @@ fun InvoiceEditorScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(start = 8.dp)
             ) {
-                IconButton(onClick = { showResetConfirmation = true }) {
-                    Res.drawable.close.toImage()
+                OutlinedButton(
+                    onClick = { viewModel.save() }
+                ) {
+                    val text = stringResource(Res.string.btn_save_settings)
+                    Text(text)
                 }
-
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(if (state.isSaving) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary)
-                )
-                Text(
-                    text = if (state.isSaving) stringResource(Res.string.invoice_saving) else stringResource(Res.string.invoice_saved),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
 
                 OutlinedButton(
                     onClick = { viewModel.showNotesScreen(true) }
@@ -98,13 +89,6 @@ fun InvoiceEditorScreen(
                     Res.drawable.edit.toImage()
                     Spacer(Modifier.width(4.dp))
                     Text(stringResource(Res.string.btn_notes))
-                }
-
-                OutlinedButton(
-                    { viewModel.save() },
-                ) {
-                    val text = stringResource(Res.string.btn_save_settings)
-                    Text(text)
                 }
             }
         }
