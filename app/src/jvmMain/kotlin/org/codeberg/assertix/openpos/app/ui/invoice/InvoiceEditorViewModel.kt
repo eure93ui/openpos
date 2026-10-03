@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.codeberg.assertix.openpos.app.settings.AppSettings
 import org.codeberg.assertix.openpos.data.model.Client
 import org.codeberg.assertix.openpos.data.model.FullName
 import org.codeberg.assertix.openpos.data.model.Item
@@ -36,6 +37,7 @@ class InvoiceEditorViewModel(
     private val itemsRepository: ItemsRepository,
     private val financialRepository: FinancialRepository,
     private val companyProfileRepository: CompanyProfileRepository,
+    private val appSettings: AppSettings,
     initialInvoiceId: Int? = null
 ) : ViewModel() {
 
@@ -447,7 +449,7 @@ class InvoiceEditorViewModel(
                         generatePdfBytes(invoice)
                     }
                     withContext(Dispatchers.IO) {
-                        pdfConverter.printPdf(pdfBytes)
+                        pdfConverter.printPdf(pdfBytes, appSettings.defaultPrinter.value)
                     }
                     uiState.update {
                         it.copy(

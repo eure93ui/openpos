@@ -40,10 +40,27 @@ interface PdfConverter {
         return images
     }
 
-    fun printPdf(pdfBytes: ByteArray) {
+    fun printPdf(
+        pdfBytes: ByteArray,
+        defaultPrinterName: String? = null,
+    ) {
         Loader.loadPDF(pdfBytes).use { document ->
             val printerJob = PrinterJob.getPrinterJob()
             printerJob.setPageable(PDFPageable(document))
+            val targetPrinter =
+                defaultPrinterName?.takeIf { it.isNotBlank() && it != "None" }
+            if (targetPrinter != null) {
+                try {
+                    val printServices = javax.print.PrintServiceLookup.lookupPrintServices(null, null)
+                    val printService = printServices.find { it.name.equals(targetPrinter, ignoreCase = true) }
+                    if (printService != null) {
+                        printerJob.printService = printService
+                        printerJob.print()
+                        return
+                    }
+                } catch (_: Exception) {
+                }
+            }
             if (printerJob.printDialog()) {
                 printerJob.print()
             }

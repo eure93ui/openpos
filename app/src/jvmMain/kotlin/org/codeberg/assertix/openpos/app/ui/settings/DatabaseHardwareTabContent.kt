@@ -1,9 +1,8 @@
 package org.codeberg.assertix.openpos.app.ui.settings
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.codeberg.assertix.openpos.app.ui.components.FormRow
@@ -19,7 +18,8 @@ internal fun DatabaseHardwareTabContent(
     onImport: () -> Unit,
     onExportData: () -> Unit,
     onExportSchema: () -> Unit,
-    onSwitchDatabase: () -> Unit
+    onSwitchDatabase: () -> Unit,
+    onUpdateDefaultPrinter: (String?) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -75,14 +75,51 @@ internal fun DatabaseHardwareTabContent(
 
         FormSectionCard(title = stringResource(Res.string.pos_printers)) {
             FormRow {
-                FormTextField(
-                    value = "АТОЛ 22Ф (USB / COM3)",
-                    onValueChange = {},
-                    readOnly = true,
-                    label = stringResource(Res.string.default_printer),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                var expanded by remember { mutableStateOf(false) }
+                val currentPrinter = state.defaultPrinter ?: "Не использовать (диалог ОС)"
+
+                Box(modifier = Modifier.weight(1f)) {
+                    OutlinedTextField(
+                        value = currentPrinter,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(Res.string.default_printer)) },
+                        trailingIcon = {
+                            IconButton(onClick = { expanded = !expanded }) {
+                                Text("▼")
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Не использовать (всегда показывать диалог ОС)") },
+                            onClick = {
+                                onUpdateDefaultPrinter(null)
+                                expanded = false
+                            }
+                        )
+                        state.availablePrinters.forEach { printerName ->
+                            DropdownMenuItem(
+                                text = { Text(printerName) },
+                                onClick = {
+                                    onUpdateDefaultPrinter(printerName)
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
             }
+            Text(
+                text = "Если принтер не выбран или установлено «Не использовать», при печати накладных каждый раз будет открываться стандартный диалог выбора принтера в операционной системе.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

@@ -110,7 +110,8 @@ fun SettingsScreen(
                     onImport = { importLauncher.launch() },
                     onExportData = { exportDataLauncher.launch(suggestedName = "openpos_data", defaultExtension = "sqlite") },
                     onExportSchema = { exportSchemaLauncher.launch(suggestedName = "openpos_schema_empty", defaultExtension = "sqlite") },
-                    onSwitchDatabase = { viewModel.switchDatabase() }
+                    onSwitchDatabase = { viewModel.switchDatabase() },
+                    onUpdateDefaultPrinter = { viewModel.updateDefaultPrinter(it) }
                 )
                 SettingsTab.FinancialConstants -> FinancialConstantsTabContent(state, viewModel)
             }
