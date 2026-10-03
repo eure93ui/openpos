@@ -28,8 +28,8 @@ internal fun InvoiceItemsSection(
     productSearchQuery: String,
     searchResults: List<Item>,
     isProductDropdownExpanded: Boolean,
-    subtotal: BigDecimal,
-    grandTotal: BigDecimal,
+    totalPrice: BigDecimal,
+    taxPercent: Int,
     onProductSearchQueryChange: (String) -> Unit,
     onSelectProduct: (Item) -> Unit,
     onUpdateQuantity: (Int, String) -> Unit,
@@ -241,25 +241,13 @@ internal fun InvoiceItemsSection(
                     }
                 }
 
-                // Amount without VAT and Total stats at the left of "new product" button
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                // Total stats at the left of "new product" button
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(stringResource(Res.string.amount_without_vat), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text("$subtotal ₽", style = MaterialTheme.typography.bodyMedium)
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(stringResource(Res.string.invoice_total), style = MaterialTheme.typography.labelMedium)
-                        Text("$grandTotal ₽", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
-                    }
+                    Text("ИТОГО (в т.ч. НДС $taxPercent%):", style = MaterialTheme.typography.labelMedium)
+                    Text("$totalPrice ₽", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
                 }
 
                 OutlinedButton(

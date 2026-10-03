@@ -150,7 +150,7 @@ internal fun ColumnScope.HistoryTable(
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
-                                text = "${invoice.totalPriceUnderTax} ₽",
+                                text = "${invoice.totalPrice} ₽",
                                 modifier = Modifier.weight(UiConstants.WeightTotalColumn),
                                 style = MaterialTheme.typography.bodyMedium,
                                 textAlign = TextAlign.End

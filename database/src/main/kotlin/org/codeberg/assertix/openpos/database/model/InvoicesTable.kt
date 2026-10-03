@@ -12,7 +12,6 @@ object InvoicesTable : IntIdTable("invoices") {
     val clientPhoneNumberSnapshot = text("client_phone_snapshot").index()
     val taxRate = integer("tax_rate")
     val totalPrice = text("total_price")
-    val totalPriceUnderTax = text("total_price_under_tax")
     val status = enumerationByName("status", 10, InvoiceStatus::class)
     val printableNotes = text("printable_notes").nullable()
     val internalNotes = text("internal_notes").nullable()

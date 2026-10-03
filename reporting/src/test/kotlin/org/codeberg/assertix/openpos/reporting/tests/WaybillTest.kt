@@ -67,7 +67,6 @@ class WaybillTest {
                         ),
                     ),
                 totalPrice = BigDecimal("1000"),
-                totalPriceUnderTax = BigDecimal("833.33"),
                 status = InvoiceStatus.ISSUED,
             )
 

@@ -20,7 +20,6 @@ data class Invoice(
     val taxRate: TaxRate,
     val items: List<InvoiceItem>,
     val totalPrice: BigDecimal,
-    val totalPriceUnderTax: BigDecimal,
     val status: InvoiceStatus = InvoiceStatus.DRAFT,
     val printableNotes: String? = null,
     val internalNotes: String? = null,

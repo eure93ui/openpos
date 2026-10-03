@@ -277,18 +277,8 @@
 
     <!-- Финансовые итоги -->
     <table class="summary-table">
-        {% if invoice.taxRate.percent > 0 %}
-        <tr>
-            <td class="text-right">Сумма без НДС:</td>
-            <td class="text-right" style="width: 25%;">{{ invoice.subTotalAmount }}</td>
-        </tr>
-        <tr>
-            <td class="text-right">В т.ч. НДС ({{ invoice.taxRate.percent }}%):</td>
-            <td class="text-right">{{ invoice.vatAmount }}</td>
-        </tr>
-        {% endif %}
         <tr class="total-row">
-            <td class="text-right">ИТОГО К ОПЛАТЕ:</td>
+            <td class="text-right">ИТОГО (в т.ч. НДС {{ invoice.taxRate.percent }}%):</td>
             <td class="text-right" style="width: 25%;">{{ invoice.totalAmount }}</td>
         </tr>
     </table>

@@ -43,7 +43,6 @@ class InvoiceRepository(
                         it[clientPhoneNumberSnapshot] = invoice.clientPhoneNumberSnapshot
                         it[taxRate] = invoice.taxRate.percent
                         it[totalPrice] = invoice.totalPrice.toPlainString()
-                        it[totalPriceUnderTax] = invoice.totalPriceUnderTax.toPlainString()
                         it[status] = invoice.status
                         it[printableNotes] = invoice.printableNotes
                         it[internalNotes] = invoice.internalNotes
@@ -161,7 +160,7 @@ class InvoiceRepository(
                     val matchesStartDate = startDate == null || !invoice.issueDate.isBefore(startDate)
                     val matchesEndDate = endDate == null || !invoice.issueDate.isAfter(endDate)
                     matchesSearch && matchesStartDate && matchesEndDate
-                }.fold(BigDecimal.ZERO) { acc, invoice -> acc.add(invoice.totalPriceUnderTax) }
+                }.fold(BigDecimal.ZERO) { acc, invoice -> acc.add(invoice.totalPrice) }
         }
 
     suspend fun delete(invoiceId: Int): Boolean =
@@ -181,7 +180,6 @@ class InvoiceRepository(
                 it[clientPhoneNumberSnapshot] = invoice.clientPhoneNumberSnapshot
                 it[taxRate] = invoice.taxRate.percent
                 it[totalPrice] = invoice.totalPrice.toPlainString()
-                it[totalPriceUnderTax] = invoice.totalPriceUnderTax.toPlainString()
                 it[status] = invoice.status
                 it[printableNotes] = invoice.printableNotes
                 it[internalNotes] = invoice.internalNotes

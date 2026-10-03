@@ -1,7 +1,6 @@
 package org.codeberg.assertix.openpos.app.ui.invoice
 
 import org.codeberg.assertix.openpos.calculations.calculateTaxForItems
-import org.codeberg.assertix.openpos.calculations.calculateTotalUnderTax
 import org.codeberg.assertix.openpos.calculations.itemsTotal
 import org.codeberg.assertix.openpos.data.model.Client
 import org.codeberg.assertix.openpos.data.model.TaxRate
@@ -41,9 +40,8 @@ data class InvoiceEditorUiState(
     val previewImages: List<java.awt.image.BufferedImage> = emptyList(),
     val isPdfProcessing: Boolean = false
 ) {
-    val subtotal: BigDecimal = itemsTotal(items)
+    val totalPrice: BigDecimal = itemsTotal(items)
     val taxAmount: BigDecimal = calculateTaxForItems(items, taxPercent)
-    val grandTotal: BigDecimal = calculateTotalUnderTax(items, taxPercent)
 
     fun toInvoice(): Invoice {
         val client = selectedClient ?: throw IllegalStateException("Client must be selected")
@@ -57,8 +55,7 @@ data class InvoiceEditorUiState(
             clientPhoneNumberSnapshot = client.phoneNumber?.value ?: "",
             taxRate = TaxRate.from(taxPercent),
             items = items,
-            totalPrice = subtotal,
-            totalPriceUnderTax = grandTotal,
+            totalPrice = totalPrice,
             status = status,
             printableNotes = printableNotes.takeIf { it.isNotBlank() },
             internalNotes = internalNotes.takeIf { it.isNotBlank() }
