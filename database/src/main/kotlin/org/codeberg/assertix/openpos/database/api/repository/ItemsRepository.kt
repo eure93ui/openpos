@@ -22,7 +22,7 @@ class ItemsRepository(
                 .insertAndGetId {
                     it[productName] = item.productName
                     it[unitOfMeasure] = item.unitOfMeasure
-                    it[defaultPrice] = item.defaultPrice.toPlainString()
+                    it[defaultPrice] = item.defaultPrice?.toPlainString()
                     it[mpn] = item.mpn
                 }.value
         }
@@ -87,7 +87,7 @@ class ItemsRepository(
             ) {
                 it[productName] = item.productName
                 it[unitOfMeasure] = item.unitOfMeasure
-                it[defaultPrice] = item.defaultPrice.toPlainString()
+                it[defaultPrice] = item.defaultPrice?.toPlainString()
                 it[mpn] = item.mpn
             } == ONE_CHANGED
         }

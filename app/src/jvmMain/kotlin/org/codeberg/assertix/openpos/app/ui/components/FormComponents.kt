@@ -25,7 +25,9 @@ fun FormTextField(
     label: String,
     modifier: Modifier = Modifier,
     readOnly: Boolean = false,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    isError: Boolean = false,
+    supportingText: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextField(
         value = value,
@@ -33,6 +35,8 @@ fun FormTextField(
         readOnly = readOnly,
         label = { Text(label) },
         singleLine = singleLine,
+        isError = isError,
+        supportingText = supportingText,
         modifier = modifier
     )
 }

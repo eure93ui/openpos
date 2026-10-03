@@ -205,7 +205,8 @@ class InvoiceEditorViewModel(
     fun saveNewProduct(name: String, mpnStr: String, unit: String, priceStr: String) {
         viewModelScope.launch {
             try {
-                val price = priceStr.toBigDecimalOrNull() ?: BigDecimal.ZERO
+                val normalizedPriceStr = priceStr.trim().replace(',', '.')
+                val price = if (normalizedPriceStr.isBlank()) null else normalizedPriceStr.toBigDecimalOrNull()
                 val normalizedMpn = mpnStr.trim().ifBlank { null }
                 val newItem = Item(
                     id = 0,
@@ -291,14 +292,15 @@ class InvoiceEditorViewModel(
                     } else invoiceItem
                 }
             } else {
+                val defaultPrice = item.defaultPrice ?: BigDecimal.ZERO
                 state.items + InvoiceItem(
                     id = state.items.size + 1,
                     itemId = item.id,
                     productNameSnapshot = item.productName,
                     unitOfMeasureSnapshot = item.unitOfMeasure,
                     quantity = BigDecimal.ONE,
-                    unitPrice = item.defaultPrice,
-                    totalPrice = item.defaultPrice,
+                    unitPrice = defaultPrice,
+                    totalPrice = defaultPrice,
                     mpnSnapshot = item.mpn
                 )
             }

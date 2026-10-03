@@ -9,14 +9,15 @@ import androidx.compose.ui.unit.dp
 import org.codeberg.assertix.openpos.app.ui.toImage
 import org.codeberg.assertix.openpos.resources.Res
 import org.codeberg.assertix.openpos.resources.arrow_back
+import org.codeberg.assertix.openpos.resources.close
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun ScreenHeader(
     title: String,
     badgeText: String? = null,
-    onReturnClick: (() -> Unit)? = null,
-    returnIcon: DrawableResource = Res.drawable.arrow_back,
+    onResetClick: (() -> Unit)? = null,
+    resetIcon: DrawableResource = Res.drawable.close,
     onPrimaryActionClick: (() -> Unit)? = null,
     primaryActionText: String? = null,
     primaryActionIcon: DrawableResource? = null,
@@ -35,9 +36,9 @@ fun ScreenHeader(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (onReturnClick != null) {
-                IconButton(onClick = onReturnClick) {
-                    returnIcon.toImage()
+            if (onResetClick != null) {
+                IconButton(onClick = onResetClick) {
+                    resetIcon.toImage()
                 }
             }
             Text(

@@ -10,6 +10,6 @@ fun ResultRow.toItem() =
         id = this[ItemsTable.id].value,
         productName = this[ItemsTable.productName],
         unitOfMeasure = this[ItemsTable.unitOfMeasure],
-        defaultPrice = BigDecimal(this[ItemsTable.defaultPrice]),
+        defaultPrice = this[ItemsTable.defaultPrice]?.let { BigDecimal(it) },
         mpn = this[ItemsTable.mpn],
     )
