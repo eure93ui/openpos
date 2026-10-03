@@ -6,20 +6,20 @@
         /* Настройки альбомного листа А4 */
         @page {
             size: A4 landscape;
-            margin: 8mm 8mm 8mm 8mm;
+            margin: 7mm 7mm 7mm 7mm;
         }
 
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
-            font-family: "Inter", sans-serif;
-            font-size: 8pt;
+            font-family: "Inter", "Arial", sans-serif;
+            font-size: 7.5pt;
             color: #111;
-            line-height: 1.2;
+            line-height: 1.18;
         }
 
-        /* Главная таблица-сетка: делит лист ровно пополам */
+        /* Главная сетка: делит лист пополам */
         table.page-layout {
             width: 100%;
             height: 100%;
@@ -27,7 +27,6 @@
             table-layout: fixed;
         }
 
-        /* Гарантирует, что контент накладных строго прижат к верху */
         table.page-layout > tbody > tr > td {
             vertical-align: top;
             padding: 0;
@@ -38,7 +37,7 @@
             vertical-align: top;
         }
 
-        /* Линия разреза по центру листа на всю высоту */
+        /* Центральная линия разреза */
         td.cut-separator {
             width: 3%;
             border-left: 1px dashed #999;
@@ -48,8 +47,8 @@
         }
 
         .cut-container {
-            margin-top: 85mm; /* Смещение ножниц на середину листа */
-            margin-left: -7px; /* Центрирование 14px иконки прямо поверх 1px линии */
+            margin-top: 85mm;
+            margin-left: -7px;
         }
 
         .cut-container svg {
@@ -58,25 +57,24 @@
             fill: #555;
         }
 
-        /* Стили внутреннего содержимого половины накладной */
         .half-sheet {
-            padding: 0 4px;
+            padding: 0 3px;
         }
 
         .title {
-            font-size: 9.5pt;
+            font-size: 9pt;
             font-weight: bold;
             text-align: center;
-            margin-bottom: 6px;
-            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+            letter-spacing: 0.2px;
         }
 
         .copy-mark {
-            font-size: 7pt;
+            font-size: 6.5pt;
             font-weight: 500;
             color: #555;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             margin-top: 1px;
         }
 
@@ -84,17 +82,17 @@
         table.parties-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         table.parties-table td {
-            padding: 2px 0;
-            font-size: 7.5pt;
+            padding: 1px 0;
+            font-size: 7pt;
             vertical-align: top;
         }
 
         .label {
-            width: 68px;
+            width: 62px;
             font-weight: bold;
             color: #444;
         }
@@ -105,33 +103,31 @@
         }
 
         .party-details {
-            font-size: 7pt;
+            font-size: 6.5pt;
             color: #333;
-            line-height: 1.25;
+            line-height: 1.2;
             margin-top: 1px;
         }
 
-        /* Блок примечаний к накладной */
+        /* Примечания к накладной (без рамки и фона) */
         .printable-notes {
-            font-size: 7.5pt;
-            margin-top: 3px;
-            margin-bottom: 6px;
-            padding: 3px 5px;
-            border: 1px solid #aaa;
-            background-color: #fcfcfc;
+            font-size: 7pt;
+            margin-top: 2px;
+            margin-bottom: 4px;
+            padding: 1px 0;
         }
 
-        /* Таблица товарных позиций */
+        /* Таблица товаров */
         table.items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         table.items-table th, table.items-table td {
             border: 1px solid #333;
-            padding: 3.5px 3px;
-            font-size: 7pt;
+            padding: 2.5px 2px;
+            font-size: 6.8pt;
         }
 
         table.items-table th {
@@ -141,7 +137,6 @@
             color: #111;
         }
 
-        /* Зебра для строк таблицы */
         table.items-table tbody tr:nth-child(even) {
             background-color: #fafafa;
         }
@@ -153,71 +148,93 @@
         }
         .bold { font-weight: bold; }
 
-        /* Блок финансовых итогов */
+        /* Итоговая строка */
         table.summary-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         table.summary-table td {
-            padding: 2px 3px;
+            padding: 1px 2px;
             font-variant-numeric: tabular-nums;
         }
 
         .total-row {
-            font-size: 8.5pt !important;
+            font-size: 8pt !important;
             font-weight: bold;
-            /* Линия сверху удалена */
         }
 
         /* Сумма прописью */
         .amount-in-words {
-            font-size: 7.5pt;
+            font-size: 7pt;
             font-weight: bold;
-            margin-top: 4px;
-            margin-bottom: 6px;
+            margin-top: 2px;
+            margin-bottom: 4px;
             border-top: 1px solid #000;
             border-bottom: 1px solid #000;
-            padding: 3px 4px;
+            padding: 2px 3px;
             background-color: #fcfcfc;
         }
 
-        /* Юридический дисклеймер */
-        .disclaimer {
-            font-size: 6pt;
-            color: #444;
+        /* Полная юридическая аннотация (без верхней линии) */
+        .disclaimer-block {
+            font-size: 5.2pt;
+            color: #222;
             text-align: justify;
-            line-height: 1.18;
-            margin-bottom: 8px;
-            padding-top: 1px;
+            line-height: 1.14;
+            margin-bottom: 4px;
+            padding-top: 2px;
+        }
+
+        .disclaimer-title {
+            font-weight: bold;
+            font-size: 5.4pt;
+            text-align: center;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            color: #000;
+        }
+
+        .disclaimer-block p {
+            margin: 0 0 1.5px 0;
+            padding: 0;
+        }
+
+        /* Расписка в получении */
+        .acceptance-note {
+            font-size: 5.5pt;
+            font-weight: bold;
+            color: #000;
+            line-height: 1.15;
+            margin-bottom: 4px;
         }
 
         /* Подписи сторон */
         table.signature-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 8px;
+            margin-top: 4px;
         }
 
         table.signature-table td {
-            font-size: 7.5pt;
-            padding-top: 4px;
+            font-size: 7pt;
+            padding-top: 2px;
             vertical-align: bottom;
         }
 
         .line {
             border-bottom: 1px solid #000;
             display: inline-block;
-            width: 110px;
-            margin-left: 3px;
+            width: 105px;
+            margin-left: 2px;
         }
     </style>
 </head>
 <body>
 
 {# ========================================================================= #}
-{# REUSABLE PEBBLE MACRO: Renders one complete half of the waybill #}
+{# REUSABLE PEBBLE MACRO: Рендерит одну полную половину накладной            #}
 {# ========================================================================= #}
 {% macro halfSheet(invoice, company, copyTitle) %}
 <div class="half-sheet">
@@ -226,15 +243,16 @@
         <div class="copy-mark">{{ copyTitle }}</div>
     </div>
 
-    <!-- Блок реквизитов -->
+    <!-- Реквизиты сторон -->
     <table class="parties-table">
         <tr>
             <td class="label">Поставщик:</td>
             <td>
                 <span class="party-name">{{ company.legalName }}</span>
                 <div class="party-details">
-                    ИНН: {{ company.taxId }} {% if company.phoneNumber is not empty %} • Тел: {{ company.phoneNumber }}{% elseif company.phone is not empty %} • Тел: {{ company.phone }}{% endif %} {% if company.legalAddress is not empty %}<br/>Адрес: {{ company.legalAddress }}{% elseif
-                    company.address is not empty %}<br/>Адрес: {{ company.address }}{% endif %}
+                    ИНН: {{ company.taxId }}
+                    {% if company.phoneNumber is not empty %} • Тел: {{ company.phoneNumber }}{% elseif company.phone is not empty %} • Тел: {{ company.phone }}{% endif %}
+                    {% if company.legalAddress is not empty %}<br/>Адрес: {{ company.legalAddress }}{% elseif company.address is not empty %}<br/>Адрес: {{ company.address }}{% endif %}
                 </div>
             </td>
         </tr>
@@ -261,7 +279,7 @@
     </div>
     {% endif %}
 
-    <!-- Таблица товарных позиций -->
+    <!-- Таблица товаров -->
     <table class="items-table">
         <thead>
         <tr>
@@ -287,12 +305,11 @@
         </tbody>
     </table>
 
-    <!-- Финансовые итоги (без верхней полосы) -->
+    <!-- Финансовые итоги -->
     <table class="summary-table">
         <tr class="total-row">
             <td class="text-right">
-                ИТОГО{% if invoice.taxRate.percent is not empty and invoice.taxRate.percent > 0 %} (в т.ч. НДС {{
-                invoice.taxRate.percent }}%){% endif %}:
+                ИТОГО{% if invoice.taxRate.percent is not empty and invoice.taxRate.percent > 0 %} (в т.ч. НДС {{ invoice.taxRate.percent }}%){% endif %}:
             </td>
             <td class="text-right" style="width: 26%;">{{ invoice.totalAmount }}</td>
         </tr>
@@ -305,25 +322,34 @@
     </div>
     {% endif %}
 
-    <!-- Юридический дисклеймер -->
-    <div class="disclaimer">
-        Товар надлежащего качества обмену и возврату не подлежит. Претензии по дефектам принимаются ТОЛЬКО до монтажа.
-        Срок поставки заказных позиций — до 45 раб. дней. Подписью покупатель подтверждает получение товара и отсутствие
-        претензий к внешнему виду.
+    <!-- Полный юридический блок условий -->
+    <div class="disclaimer-block">
+        <div class="disclaimer-title">Условия поставки, приемки и гарантии:</div>
+        <p><strong>1. Сроки и доставка:</strong> Срок поставки заказного товара — до 45 раб. дней со дня 100% оплаты (ст. 314 ГК РФ). Доставка платная до подъезда. Разгрузка и подъем на этаж — силами и за счет Покупателя (ст. 499 ГК РФ). Самовывоз со склада — по предварительному согласованию.</p>
+        <p><strong>2. Приемка и претензии:</strong> Покупатель обязан осмотреть товар при получении (ст. 483, 513 ГК РФ). Претензии по видимым дефектам (сколы, царапины, разнотон, несоответствие цвета/модели, геометрия и комплектность) принимаются СТРОГО ДО НАЧАЛА МОНТАЖА, РАСКРОЯ ИЛИ УКЛАДКИ. Товар со следами монтажа, врезки фурнитуры или нарушенной заводской упаковкой признается принятым без дефектов и обмену/возврату не подлежит.</p>
+        <p><strong>3. Свойства материалов:</strong> Товар изготовлен с применением дерева, шпона или пленок. Природные вариации текстуры, разнотон полотен в пачке и естественное изменение оттенка древесины не являются дефектом (ст. 469 ГК РФ). Товар может незначительно отличаться по оттенку от выставочного образца.</p>
+        <p><strong>4. Хранение и монтаж:</strong> Монтаж дверей и полов производится строго после окончания всех «мокрых» работ (стяжка, штукатурка). Покупатель обязан соблюдать микроклимат: влажность 40–60%, t 18–24°C (зимой обязательно использование увлажнителей). Обязательны гидроизоляция основания и термошвы (пороги/молдинги в проемах). Продавец не отвечает за дефекты, вызванные нарушением микроклимата или неквалифицированным монтажом третьих лиц (п. 5 ст. 18 ЗоЗПП, ст. 1098 ГК РФ).</p>
+        <p><strong>5. Возврат и обмен:</strong> Метражные отделочные материалы надлежащего качества, а также позиции с индивидуально-определенными свойствами (под заказ) обмену и возврату не подлежат (ст. 25, п. 4 ст. 26.1 ЗоЗПП; Постановление Правительства РФ № 2463). Расчет количества товара продавцом носит рекомендательный характер; излишки товара надлежащего качества возврату не подлежат.</p>
+        <p><strong>6. Информирование:</strong> Подписью Покупатель подтверждает получение полной информации о товаре, правилах монтажа и инструкций по эксплуатации дверей, обоев и напольных покрытий (ламинат, SPC, паркетная доска) (ст. 10 ЗоЗПП).</p>
     </div>
 
-    <!-- Подписи -->
+    <!-- Строка подтверждения перед подписью -->
+    <div class="acceptance-note">
+        С условиями поставки, правилами хранения и монтажа ознакомлен. Товар осмотрен, комплектность полная, претензий к внешнему виду не имею.
+    </div>
+
+    <!-- Блок подписей -->
     <table class="signature-table">
         <tr>
-            <td style="width: 50%;">Отпустил: <span class="line"></span></td>
-            <td style="width: 50%;">Заказчик: <span class="line"></span></td>
+            <td style="width: 50%;">Сдал (продавец): <span class="line"></span></td>
+            <td style="width: 50%;">Принял (покупатель): <span class="line"></span></td>
         </tr>
     </table>
 </div>
 {% endmacro %}
 
 {# ========================================================================= #}
-{# MAIN PAGE LAYOUT: Two identical halves separated by the cut-line #}
+{# MAIN PAGE LAYOUT: Две зеркальные половины листа                           #}
 {# ========================================================================= #}
 <table class="page-layout">
     <tr>
@@ -332,7 +358,7 @@
             {{ halfSheet(invoice, company, "[ Экземпляр продавца ]") }}
         </td>
 
-        <!-- Центральная разделительная линия на всю высоту страницы -->
+        <!-- Разделительная линия разреза по центру -->
         <td class="cut-separator">
             {% if cutIconSvg is not empty %}
             <div class="cut-container">
