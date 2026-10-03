@@ -140,8 +140,8 @@ fun InvoiceEditorScreen(
             productSearchQuery = state.productSearchQuery,
             searchResults = state.searchResults,
             isProductDropdownExpanded = state.isProductDropdownExpanded,
-            subtotal = state.subtotal,
-            grandTotal = state.grandTotal,
+            totalPrice = state.totalPrice,
+            taxPercent = state.taxPercent,
             onProductSearchQueryChange = { viewModel.setProductSearchQuery(it) },
             onSelectProduct = { viewModel.addProduct(it) },
             onUpdateQuantity = { id, qty -> viewModel.updateItemQuantity(id, qty) },
@@ -153,11 +153,8 @@ fun InvoiceEditorScreen(
 
         // Footer Summary Section
         InvoiceSummarySection(
-            subtotal = state.subtotal,
-            taxPercent = state.taxPercent,
-            taxAmount = state.taxAmount,
-            grandTotal = state.grandTotal,
-            onVatChange = { viewModel.updateVat(it) }
+            totalPrice = state.totalPrice,
+            taxPercent = state.taxPercent
         )
     }
 

@@ -33,15 +33,9 @@ object InvoiceReportMapper {
                             "totalPrice" to item.totalPrice.setScale(2, RoundingMode.HALF_UP).toPlainString(),
                         )
                     },
-                "subTotalAmount" to invoice.totalPrice.setScale(2, RoundingMode.HALF_UP).toPlainString(),
-                "vatAmount" to
-                    invoice.totalPriceUnderTax
-                        .subtract(invoice.totalPrice)
-                        .setScale(2, RoundingMode.HALF_UP)
-                        .toPlainString(),
-                "totalAmount" to invoice.totalPriceUnderTax.setScale(2, RoundingMode.HALF_UP).toPlainString(),
+                "totalAmount" to invoice.totalPrice.setScale(2, RoundingMode.HALF_UP).toPlainString(),
                 "invoiceAmountInWords" to
-                    invoice.totalPriceUnderTax
+                    invoice.totalPrice
                         .setScale(2, RoundingMode.HALF_UP)
                         .stringRepresentation(Locale.getDefault().language)
                         .replaceFirstChar { it.uppercase() },
