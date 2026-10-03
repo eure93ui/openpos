@@ -71,6 +71,11 @@ compose.desktop {
             windows {
                 shortcut = true
             }
+
+            jvmArgs += listOf(
+                "-XX:+UseZGC",
+                "-XX:+ZGenerational",
+            )
         }
     }
 }
