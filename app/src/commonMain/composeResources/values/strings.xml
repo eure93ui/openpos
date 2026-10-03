@@ -74,6 +74,7 @@
     <string name="status_paid">Paid</string>
     <string name="status_issued">Issued</string>
     <string name="status_draft">Draft</string>
+    <string name="status_shipped">Shipped</string>
     <string name="startup_select_db">Select database to continue</string>
     <string name="startup_create_db">Create database</string>
     <string name="startup_open_db">Open database</string>
