@@ -17,8 +17,13 @@ sealed interface TaxRate {
     }
 
     @Serializable
-    data object Rate20 : TaxRate {
-        override val percent: Int = 20
+    data object Rate7 : TaxRate {
+        override val percent: Int = 7
+    }
+
+    @Serializable
+    data object Rate22 : TaxRate {
+        override val percent: Int = 22
     }
 
     @Serializable
@@ -27,13 +32,13 @@ sealed interface TaxRate {
     ) : TaxRate
 
     companion object {
-        val all = listOf(None, Rate5, Rate20)
+        val all = listOf(None, Rate5, Rate7, Rate22)
 
         fun from(value: Int): TaxRate =
             when (value) {
                 None.percent -> None
                 Rate5.percent -> Rate5
-                Rate20.percent -> Rate20
+                Rate22.percent -> Rate22
                 else -> Custom(value)
             }
     }
