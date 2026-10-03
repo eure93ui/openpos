@@ -53,7 +53,7 @@ class WaybillTest {
                     ),
                 clientNameSnapshot = "Иванов И. И.",
                 clientPhoneNumberSnapshot = "+7 999 000-00-00",
-                taxRate = TaxRate.Rate20,
+                taxRate = TaxRate.Rate22,
                 items =
                     listOf(
                         InvoiceItem(

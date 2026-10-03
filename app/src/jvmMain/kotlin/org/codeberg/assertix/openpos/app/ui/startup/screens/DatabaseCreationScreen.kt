@@ -12,6 +12,7 @@ import org.codeberg.assertix.openpos.app.ui.startup.transformations.BankAccountV
 import org.codeberg.assertix.openpos.app.ui.startup.transformations.PhoneVisualTransformation
 import org.codeberg.assertix.openpos.app.ui.startup.validators.DatabaseCreationFormState
 import org.codeberg.assertix.openpos.app.ui.toImage
+import org.codeberg.assertix.openpos.data.model.FinancialConfiguration
 import org.codeberg.assertix.openpos.data.model.PhoneNumber
 import org.codeberg.assertix.openpos.data.model.company.*
 import org.codeberg.assertix.openpos.data.validation.CompanyProfileValidator
@@ -22,7 +23,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun DatabaseCreationScreen(
     onBack: () -> Unit,
-    onComplete: (CompanyProfile) -> Unit
+    onComplete: (CompanyProfile, FinancialConfiguration) -> Unit
 ) {
     val formState = remember { DatabaseCreationFormState() }
 
@@ -30,6 +31,7 @@ fun DatabaseCreationScreen(
         is StartupCreationStep.CompanyInfo -> stringResource(Res.string.step_company_info)
         is StartupCreationStep.CompanyCredentials -> stringResource(Res.string.step_company_credentials)
         is StartupCreationStep.BankDetails -> stringResource(Res.string.step_bank_details)
+        is StartupCreationStep.FinancialSettings -> stringResource(Res.string.step_financial_settings)
     }
 
     Column(
@@ -53,7 +55,7 @@ fun DatabaseCreationScreen(
 
         StartupStepProgress(
             currentStep = formState.currentStep.index,
-            totalSteps = 3,
+            totalSteps = 4,
             stepTitle = stepTitle
         )
 
@@ -197,6 +199,36 @@ fun DatabaseCreationScreen(
                     shape = MaterialTheme.shapes.medium
                 )
             }
+            is StartupCreationStep.FinancialSettings -> {
+                OutlinedTextField(
+                    value = formState.invoicePrefix.value,
+                    onValueChange = { formState.invoicePrefix.value = it },
+                    label = { Text(stringResource(Res.string.invoice_prefix)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium
+                )
+
+                OutlinedTextField(
+                    value = formState.taxPercent.value,
+                    onValueChange = { formState.taxPercent.value = it.filter { ch -> ch.isDigit() } },
+                    label = { Text(stringResource(Res.string.vat_rate)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    listOf("0", "5", "7", "20", "22").forEach { rate ->
+                        FilterChip(
+                            selected = formState.taxPercent.value == rate,
+                            onClick = { formState.taxPercent.value = rate },
+                            label = { Text("$rate%") }
+                        )
+                    }
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -246,9 +278,13 @@ fun DatabaseCreationScreen(
                                     correspondentAccount = formState.correspondentAccount.value
                                 )
                             )
+                            val financialConfig = FinancialConfiguration(
+                                taxPercent = formState.taxPercent.value.toIntOrNull() ?: 22,
+                                invoicePrefix = formState.invoicePrefix.value
+                            )
                             val validationResult = CompanyProfileValidator.validate(profile)
                             if (validationResult.isValid) {
-                                onComplete(profile)
+                                onComplete(profile, financialConfig)
                             }
                         }
                     },
