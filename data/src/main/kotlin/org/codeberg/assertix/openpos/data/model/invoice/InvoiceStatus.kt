@@ -7,4 +7,5 @@ enum class InvoiceStatus {
     DRAFT,
     ISSUED,
     PAID,
+    SHIPPED,
 }

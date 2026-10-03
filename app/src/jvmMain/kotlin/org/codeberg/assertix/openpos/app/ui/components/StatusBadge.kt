@@ -9,16 +9,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import org.codeberg.assertix.openpos.app.ui.UiConstants
 import org.codeberg.assertix.openpos.app.ui.theme.AppColors
 import org.codeberg.assertix.openpos.data.model.invoice.InvoiceStatus
+import org.codeberg.assertix.openpos.resources.Res
+import org.codeberg.assertix.openpos.resources.status_draft
+import org.codeberg.assertix.openpos.resources.status_issued
+import org.codeberg.assertix.openpos.resources.status_paid
+import org.codeberg.assertix.openpos.resources.status_shipped
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun StatusBadge(status: InvoiceStatus) {
-    val (text, color) = when (status) {
-        InvoiceStatus.PAID -> "Оплачено" to AppColors.statusGreen
-        InvoiceStatus.ISSUED -> "Выставлено" to AppColors.statusBlue
-        InvoiceStatus.DRAFT -> "Черновик" to AppColors.statusGray
+    val (textRes, color) = when (status) {
+        InvoiceStatus.PAID -> Res.string.status_paid to AppColors.statusGreen
+        InvoiceStatus.ISSUED -> Res.string.status_issued to AppColors.statusBlue
+        InvoiceStatus.DRAFT -> Res.string.status_draft to AppColors.statusGray
+        InvoiceStatus.SHIPPED -> Res.string.status_shipped to Color(0xFF7C3AED)
     }
 
     Box(
@@ -28,7 +36,7 @@ fun StatusBadge(status: InvoiceStatus) {
             .padding(horizontal = UiConstants.SpacingSmall, vertical = UiConstants.SpacingTiny)
     ) {
         Text(
-            text = text,
+            text = stringResource(textRes),
             style = MaterialTheme.typography.labelSmall,
             color = color
         )
