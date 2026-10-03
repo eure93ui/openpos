@@ -251,7 +251,7 @@
                 <span class="party-name">{{ company.legalName }}</span>
                 <div class="party-details">
                     ИНН: {{ company.taxId }}
-                    {% if company.phoneNumber is not empty %} • Тел: {{ company.phoneNumber }}{% elseif company.phone is not empty %} • Тел: {{ company.phone }}{% endif %}
+                    {% if company.phoneNumber is not empty %} • Тел: {{ company.phoneNumber }}{% elseif company.phone is not empty %} • Тел: {{ company.phone }}{% endif %}, +79093320303
                     {% if company.legalAddress is not empty %}<br/>Адрес: {{ company.legalAddress }}{% elseif company.address is not empty %}<br/>Адрес: {{ company.address }}{% endif %}
                 </div>
             </td>
