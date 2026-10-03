@@ -122,7 +122,7 @@ internal fun ColumnScope.ItemsTable(
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                text = "${item.defaultPrice} ₽",
+                                text = "${item.defaultPrice ?: "—"} ₽",
                                 modifier = Modifier.weight(UiConstants.WeightPriceColumn),
                                 style = MaterialTheme.typography.bodyMedium,
                                 textAlign = TextAlign.End
