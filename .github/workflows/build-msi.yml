@@ -1,4 +1,4 @@
-name: Build Windows MSI
+name: Build Windows Exe
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-msi:
+  build-exe:
     runs-on: windows-latest
 
     steps:
@@ -27,13 +27,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build Windows MSI Package
-        run: ./gradlew.bat packageMsi
+      - name: Build Windows Exe Package
+        run: ./gradlew.bat packageExe
 
-      - name: Upload MSI Artifact
+      - name: Upload Exe Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: openpos-windows-msi
-          path: app/build/compose/binaries/main/msi/*.msi
-
-
+          name: openpos-windows-exe
+          path: '**/build/compose/binaries/main/exe/*.exe'

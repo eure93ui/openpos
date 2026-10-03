@@ -52,7 +52,7 @@ compose.desktop {
         }
 
         nativeDistributions {
-            targetFormats(TargetFormat.Rpm, TargetFormat.Msi)
+            targetFormats(TargetFormat.Rpm, TargetFormat.Msi, TargetFormat.Exe)
             modules(
                 "java.desktop",
                 "java.logging",
