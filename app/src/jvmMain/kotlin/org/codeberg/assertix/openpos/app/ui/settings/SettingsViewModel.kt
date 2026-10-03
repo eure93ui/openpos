@@ -36,7 +36,9 @@ data class SettingsUiState(
     val isLoading: Boolean = false,
     val saveSuccess: Boolean = false,
     val errorMessage: String? = null,
-    val databasePath: String = ""
+    val databasePath: String = "",
+    val defaultPrinter: String? = null,
+    val availablePrinters: List<String> = emptyList()
 )
 
 @Stable
@@ -63,6 +65,8 @@ class SettingsViewModel(
                 val dbPath = sessionHolder.currentPath?.toAbsolutePath()?.toString()
                     ?: appSettings.rememberedDatabase.value?.toAbsolutePath()?.toString()
                     ?: ""
+                val defaultPrinter = appSettings.defaultPrinter.value
+                val availablePrinters = org.codeberg.assertix.openpos.app.util.PrinterManager.getAvailablePrinters()
                 _uiState.update {
                     it.copy(
                         legalName = profile.companyInfo.fullNaming,
@@ -78,6 +82,8 @@ class SettingsViewModel(
                         taxPercent = financialSettings.taxPercent,
                         invoicePrefix = financialSettings.invoicePrefix,
                         databasePath = dbPath,
+                        defaultPrinter = defaultPrinter,
+                        availablePrinters = availablePrinters,
                         isLoading = false
                     )
                 }
@@ -106,6 +112,10 @@ class SettingsViewModel(
     fun updateCorrAccount(value: String) { _uiState.update { it.copy(corrAccount = value) } }
     fun updateInvoicePrefix(value: String) { _uiState.update { it.copy(invoicePrefix = value) } }
     fun updateTaxPercent(value: Int) { _uiState.update { it.copy(taxPercent = value) } }
+    fun updateDefaultPrinter(printerName: String?) {
+        appSettings.updateDefaultPrinter(printerName)
+        _uiState.update { it.copy(defaultPrinter = printerName) }
+    }
 
     fun saveProfile() {
         viewModelScope.launch {

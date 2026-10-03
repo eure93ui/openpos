@@ -63,6 +63,21 @@ class AppSettings(private val settings: Settings) {
             settings.getStringOrNull(Keys.HISTORY_CUSTOM_END_DATE)
         )
 
+    val defaultPrinter: StateFlow<String?>
+        field = MutableStateFlow(
+            settings.getStringOrNull(Keys.DEFAULT_PRINTER)
+        )
+
+    fun updateDefaultPrinter(printerName: String?) {
+        if (printerName.isNullOrBlank() || printerName == "None") {
+            settings.remove(Keys.DEFAULT_PRINTER)
+            defaultPrinter.value = null
+        } else {
+            settings.putString(Keys.DEFAULT_PRINTER, printerName)
+            defaultPrinter.value = printerName
+        }
+    }
+
     fun updateHistoryCustomRange(startDate: LocalDate?, endDate: LocalDate?) {
         if (startDate != null) {
             settings.putString(Keys.HISTORY_CUSTOM_START_DATE, startDate.toString())
@@ -84,5 +99,6 @@ class AppSettings(private val settings: Settings) {
         const val HISTORY_DATE_FILTER = "history_date_filter"
         const val HISTORY_CUSTOM_START_DATE = "history_custom_start_date"
         const val HISTORY_CUSTOM_END_DATE = "history_custom_end_date"
+        const val DEFAULT_PRINTER = "default_printer"
     }
 }

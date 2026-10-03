@@ -84,11 +84,12 @@ fun StartupScreen() {
                     onBack = {
                         startupState = Selecting
                     },
-                    onComplete = { profile, financialConfig ->
+                    onComplete = { profile, financialConfig, defaultPrinter ->
                         coroutineScope.launch {
                             val wasCreated = sessionHolder.createDatabase(currentState.path, profile, financialConfig)
                             if (wasCreated) {
                                 appSettings.rememberDatabase(currentState.path)
+                                appSettings.updateDefaultPrinter(defaultPrinter)
                                 startupState = Ready(currentState.path)
                             } else {
                                 startupState = Failed(currentState.path)

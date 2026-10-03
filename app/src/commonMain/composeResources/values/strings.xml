@@ -137,4 +137,5 @@
     <string name="internal_notes_label">Internal Note (not printed)</string>
     <string name="btn_notes">Notes</string>
     <string name="step_financial_settings">Financial Settings &amp; Taxes</string>
+    <string name="step_default_printer">Default Printer Selection</string>
 </resources>

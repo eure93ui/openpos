@@ -1,6 +1,8 @@
 package org.codeberg.assertix.openpos.app.ui.startup.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -12,6 +14,7 @@ import org.codeberg.assertix.openpos.app.ui.startup.transformations.BankAccountV
 import org.codeberg.assertix.openpos.app.ui.startup.transformations.PhoneVisualTransformation
 import org.codeberg.assertix.openpos.app.ui.startup.validators.DatabaseCreationFormState
 import org.codeberg.assertix.openpos.app.ui.toImage
+import org.codeberg.assertix.openpos.app.util.PrinterManager
 import org.codeberg.assertix.openpos.data.model.FinancialConfiguration
 import org.codeberg.assertix.openpos.data.model.PhoneNumber
 import org.codeberg.assertix.openpos.data.model.company.*
@@ -23,7 +26,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun DatabaseCreationScreen(
     onBack: () -> Unit,
-    onComplete: (CompanyProfile, FinancialConfiguration) -> Unit
+    onComplete: (CompanyProfile, FinancialConfiguration, String?) -> Unit
 ) {
     val formState = remember { DatabaseCreationFormState() }
 
@@ -32,6 +35,7 @@ fun DatabaseCreationScreen(
         is StartupCreationStep.CompanyCredentials -> stringResource(Res.string.step_company_credentials)
         is StartupCreationStep.BankDetails -> stringResource(Res.string.step_bank_details)
         is StartupCreationStep.FinancialSettings -> stringResource(Res.string.step_financial_settings)
+        is StartupCreationStep.DefaultPrinter -> stringResource(Res.string.step_default_printer)
     }
 
     Column(
@@ -55,7 +59,7 @@ fun DatabaseCreationScreen(
 
         StartupStepProgress(
             currentStep = formState.currentStep.index,
-            totalSteps = 4,
+            totalSteps = 5,
             stepTitle = stepTitle
         )
 
@@ -229,6 +233,73 @@ fun DatabaseCreationScreen(
                     }
                 }
             }
+            is StartupCreationStep.DefaultPrinter -> {
+                val printers = remember { PrinterManager.getAvailablePrinters() }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Выберите принтер для печати чеков и накладных по умолчанию (или пропустите для показа диалога ОС каждый раз):",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.medium,
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                        onClick = { formState.selectedPrinter.value = null }
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            RadioButton(
+                                selected = formState.selectedPrinter.value == null,
+                                onClick = { formState.selectedPrinter.value = null }
+                            )
+                            Text("Не использовать (всегда показывать диалог печати ОС)", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+
+                    if (printers.isEmpty()) {
+                        Text(
+                            text = "Системные принтеры не обнаружены. Будет использоваться диалог печати ОС.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth().height(180.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            items(printers) { printerName ->
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = MaterialTheme.shapes.medium,
+                                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                                    onClick = { formState.selectedPrinter.value = printerName }
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        RadioButton(
+                                            selected = formState.selectedPrinter.value == printerName,
+                                            onClick = { formState.selectedPrinter.value = printerName }
+                                        )
+                                        Text(printerName, style = MaterialTheme.typography.bodyMedium)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -284,7 +355,7 @@ fun DatabaseCreationScreen(
                             )
                             val validationResult = CompanyProfileValidator.validate(profile)
                             if (validationResult.isValid) {
-                                onComplete(profile, financialConfig)
+                                onComplete(profile, financialConfig, formState.selectedPrinter.value)
                             }
                         }
                     },

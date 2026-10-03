@@ -5,21 +5,24 @@ sealed class StartupCreationStep(val index: Int) {
     data object CompanyCredentials : StartupCreationStep(1)
     data object BankDetails : StartupCreationStep(2)
     data object FinancialSettings : StartupCreationStep(3)
+    data object DefaultPrinter : StartupCreationStep(4)
 
     val next: StartupCreationStep?
         get() = when (this) {
             is CompanyInfo -> CompanyCredentials
             is CompanyCredentials -> BankDetails
             is BankDetails -> FinancialSettings
-            is FinancialSettings -> null
+            is FinancialSettings -> DefaultPrinter
+            is DefaultPrinter -> null
         }
 
     val previous: StartupCreationStep?
         get() = when (this) {
             is CompanyInfo -> null
             is CompanyCredentials -> CompanyInfo
-            is BankDetails -> CompanyCredentials
-            is FinancialSettings -> BankDetails
+            is BankDetails -> BankDetails
+            is FinancialSettings -> FinancialSettings
+            is DefaultPrinter -> FinancialSettings
         }
 
     companion object {
@@ -27,7 +30,8 @@ sealed class StartupCreationStep(val index: Int) {
             0 -> CompanyInfo
             1 -> CompanyCredentials
             2 -> BankDetails
-            else -> FinancialSettings
+            3 -> FinancialSettings
+            else -> DefaultPrinter
         }
     }
 }
