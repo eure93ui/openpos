@@ -25,6 +25,9 @@ class DatabaseCreationFormState {
     val checkingAccount = BankAccountValidatorState(StartupDefaults.DEFAULT_CHECKING_ACCOUNT, "Расчетный счет")
     val correspondentAccount = BankAccountValidatorState(StartupDefaults.DEFAULT_CORRESPONDENT_ACCOUNT, "Корреспондентский счет")
 
+    val invoicePrefix = mutableStateOf("INV-2026-")
+    val taxPercent = mutableStateOf("22")
+
     val isStep0Valid: Boolean
         get() = legalName.isValid && legalAddress.isValid && phone.isValid
 
@@ -34,11 +37,15 @@ class DatabaseCreationFormState {
     val isStep2Valid: Boolean
         get() = bankName.isValid && bic.isValid && checkingAccount.isValid && correspondentAccount.isValid
 
+    val isStep3Valid: Boolean
+        get() = invoicePrefix.value.isNotBlank() && taxPercent.value.toIntOrNull() != null && (taxPercent.value.toIntOrNull() ?: -1) >= 0
+
     val isCurrentStepValid: Boolean
         get() = when (currentStep) {
             is StartupCreationStep.CompanyInfo -> isStep0Valid
             is StartupCreationStep.CompanyCredentials -> isStep1Valid
             is StartupCreationStep.BankDetails -> isStep2Valid
+            is StartupCreationStep.FinancialSettings -> isStep3Valid
         }
 
     fun proceedToNextStep() {

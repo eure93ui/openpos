@@ -3,6 +3,7 @@ package org.codeberg.assertix.openpos.database.api
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.codeberg.assertix.openpos.data.model.FinancialConfiguration
 import org.codeberg.assertix.openpos.data.model.PhoneNumber
 import org.codeberg.assertix.openpos.data.model.company.BankDetails
 import org.codeberg.assertix.openpos.data.model.company.CompanyCredentials
@@ -115,10 +116,11 @@ class SessionHolder : AutoCloseable {
                         correspondentAccount = "30101810400000000225",
                     ),
             ),
+        financialConfiguration: FinancialConfiguration = FinancialConfiguration(taxPercent = 22, invoicePrefix = "INV-2026-"),
     ): Boolean {
         close()
         val session: DatabaseSession = DatabaseSession(path)
-        val success: Boolean = session.createDatabase(companyProfile)
+        val success: Boolean = session.createDatabase(companyProfile, financialConfiguration)
         if (success) {
             _currentPath = path
             databaseSession = session

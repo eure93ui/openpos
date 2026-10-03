@@ -1,6 +1,7 @@
 package org.codeberg.assertix.openpos.database
 
 import kotlinx.coroutines.runBlocking
+import org.codeberg.assertix.openpos.data.model.FinancialConfiguration
 import org.codeberg.assertix.openpos.data.model.PhoneNumber
 import org.codeberg.assertix.openpos.data.model.company.BankDetails
 import org.codeberg.assertix.openpos.data.model.company.CompanyCredentials
@@ -43,6 +44,7 @@ object SchemaGenerator {
                             correspondentAccount = "30101810400000000225",
                         ),
                 ),
+                FinancialConfiguration(taxPercent = 22, invoicePrefix = "INV-2026-"),
             )
             session.close()
         }

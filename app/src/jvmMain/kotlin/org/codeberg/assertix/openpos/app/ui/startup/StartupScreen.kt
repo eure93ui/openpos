@@ -84,9 +84,9 @@ fun StartupScreen() {
                     onBack = {
                         startupState = Selecting
                     },
-                    onComplete = { profile ->
+                    onComplete = { profile, financialConfig ->
                         coroutineScope.launch {
-                            val wasCreated = sessionHolder.createDatabase(currentState.path, profile)
+                            val wasCreated = sessionHolder.createDatabase(currentState.path, profile, financialConfig)
                             if (wasCreated) {
                                 appSettings.rememberDatabase(currentState.path)
                                 startupState = Ready(currentState.path)

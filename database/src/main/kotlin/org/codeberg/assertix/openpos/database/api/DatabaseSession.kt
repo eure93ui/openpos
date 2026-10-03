@@ -1,5 +1,6 @@
 package org.codeberg.assertix.openpos.database.api
 
+import org.codeberg.assertix.openpos.data.model.FinancialConfiguration
 import org.codeberg.assertix.openpos.data.model.company.CompanyProfile
 import org.codeberg.assertix.openpos.database.model.ClientsTable
 import org.codeberg.assertix.openpos.database.model.FinancialSettingsTable
@@ -42,7 +43,10 @@ internal data class DatabaseSession(
      * Creates database tables required by the application if they do not already exist and inserts initial company profile.
      * @return `true` if creation succeeded; `false` if initialization failed.
      */
-    suspend fun createDatabase(companyProfile: CompanyProfile): Boolean =
+    suspend fun createDatabase(
+        companyProfile: CompanyProfile,
+        financialConfiguration: FinancialConfiguration = FinancialConfiguration(taxPercent = 22, invoicePrefix = "INV-2026-"),
+    ): Boolean =
         try {
             query {
                 SchemaUtils.create(
@@ -86,7 +90,8 @@ internal data class DatabaseSession(
                 if (FinancialSettingsTable.selectAll().where { FinancialSettingsTable.id eq 1 }.empty()) {
                     FinancialSettingsTable.insert {
                         it[id] = 1
-                        it[taxPercent] = 20
+                        it[taxPercent] = financialConfiguration.taxPercent
+                        it[invoicePrefix] = financialConfiguration.invoicePrefix
                     }
                 }
             }
