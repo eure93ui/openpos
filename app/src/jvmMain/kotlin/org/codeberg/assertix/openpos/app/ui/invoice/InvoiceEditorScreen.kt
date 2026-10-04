@@ -126,6 +126,8 @@ fun InvoiceEditorScreen(
             isProductDropdownExpanded = state.isProductDropdownExpanded,
             totalPrice = state.totalPrice,
             taxPercent = state.taxPercent,
+            quantityInputs = state.quantityInputs,
+            priceInputs = state.priceInputs,
             onProductSearchQueryChange = { viewModel.setProductSearchQuery(it) },
             onSelectProduct = { viewModel.addProduct(it) },
             onUpdateQuantity = { id, qty -> viewModel.updateItemQuantity(id, qty) },

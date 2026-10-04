@@ -30,6 +30,8 @@ internal fun InvoiceItemsSection(
     isProductDropdownExpanded: Boolean,
     totalPrice: BigDecimal,
     taxPercent: Int,
+    quantityInputs: Map<Int, String> = emptyMap(),
+    priceInputs: Map<Int, String> = emptyMap(),
     onProductSearchQueryChange: (String) -> Unit,
     onSelectProduct: (Item) -> Unit,
     onUpdateQuantity: (Int, String) -> Unit,
@@ -139,7 +141,7 @@ internal fun InvoiceItemsSection(
                                 )
                                 Box(modifier = Modifier.weight(UiConstants.WeightQtyColumn), contentAlignment = Alignment.CenterEnd) {
                                     OutlinedTextField(
-                                        value = item.quantity.toPlainString(),
+                                        value = quantityInputs[item.id] ?: item.quantity.toPlainString(),
                                         onValueChange = { onUpdateQuantity(item.id, it) },
                                         modifier = Modifier.width(UiConstants.UnitColumnWidth),
                                         singleLine = true,
@@ -154,7 +156,7 @@ internal fun InvoiceItemsSection(
                                 )
                                 Box(modifier = Modifier.weight(UiConstants.WeightPriceColumn), contentAlignment = Alignment.CenterEnd) {
                                     OutlinedTextField(
-                                        value = item.unitPrice.toPlainString(),
+                                        value = priceInputs[item.id] ?: item.unitPrice.toPlainString(),
                                         onValueChange = { onUpdatePrice(item.id, it) },
                                         modifier = Modifier.width(UiConstants.ActionColumnWidthSmall),
                                         singleLine = true,

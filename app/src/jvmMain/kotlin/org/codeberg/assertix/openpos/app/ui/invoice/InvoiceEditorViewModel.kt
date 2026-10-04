@@ -317,32 +317,55 @@ class InvoiceEditorViewModel(
     }
 
     fun updateItemQuantity(itemId: Int, quantityStr: String) {
-        val qty = quantityStr.toBigDecimalOrNull() ?: BigDecimal.ZERO
+        val filtered = quantityStr.filter { it.isDigit() || it == '.' || it == ',' }
+        val normalized = filtered.trim().replace(',', '.')
+        val qty = if (normalized.isBlank() || normalized == "." || normalized == "-") {
+            null
+        } else {
+            normalized.toBigDecimalOrNull()
+        }
         uiState.update { state ->
+            val newQuantityInputs = state.quantityInputs + (itemId to filtered)
             val updated = state.items.map { item ->
                 if (item.id == itemId) {
-                    item.copy(
-                        quantity = qty,
-                        totalPrice = qty.multiply(item.unitPrice)
-                    )
+                    if (qty != null) {
+                        item.copy(
+                            quantity = qty,
+                            totalPrice = qty.multiply(item.unitPrice)
+                        )
+                    } else {
+                        item
+                    }
                 } else item
             }
-            state.copy(items = updated, itemsError = null)
+            state.copy(items = updated, quantityInputs = newQuantityInputs, itemsError = null)
         }
     }
 
     fun updateItemPrice(itemId: Int?, priceStr: String) {
-        val price = priceStr.toBigDecimalOrNull() ?: BigDecimal.ZERO
+        if (itemId == null) return
+        val filtered = priceStr.filter { it.isDigit() || it == '.' || it == ',' }
+        val normalized = filtered.trim().replace(',', '.')
+        val price = if (normalized.isBlank() || normalized == "." || normalized == "-") {
+            null
+        } else {
+            normalized.toBigDecimalOrNull()
+        }
         uiState.update { state ->
+            val newPriceInputs = state.priceInputs + (itemId to filtered)
             val updated = state.items.map { item ->
                 if (item.id == itemId) {
-                    item.copy(
-                        unitPrice = price,
-                        totalPrice = item.quantity.multiply(price)
-                    )
+                    if (price != null) {
+                        item.copy(
+                            unitPrice = price,
+                            totalPrice = item.quantity.multiply(price)
+                        )
+                    } else {
+                        item
+                    }
                 } else item
             }
-            state.copy(items = updated, itemsError = null)
+            state.copy(items = updated, priceInputs = newPriceInputs, itemsError = null)
         }
     }
 
