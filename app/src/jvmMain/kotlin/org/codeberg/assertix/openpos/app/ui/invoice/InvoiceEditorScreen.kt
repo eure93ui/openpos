@@ -10,7 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.dp
 import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
@@ -133,6 +132,8 @@ fun InvoiceEditorScreen(
             onUpdateQuantity = { id, qty -> viewModel.updateItemQuantity(id, qty) },
             onUpdatePrice = { id, price -> viewModel.updateItemPrice(id, price) },
             onUpdateMpn = { id, mpn -> viewModel.updateItemMpn(id, mpn) },
+            onUpdateProductName = { id, name -> viewModel.updateItemProductName(id, name) },
+            onUpdateUnitOfMeasure = { id, unit -> viewModel.updateItemUnitOfMeasure(id, unit) },
             onRemoveItem = { viewModel.removeItem(it) },
             onNewProductClick = { viewModel.showNewProductDialog(true) }
         )

@@ -37,6 +37,8 @@ internal fun InvoiceItemsSection(
     onUpdateQuantity: (Int, String) -> Unit,
     onUpdatePrice: (Int, String) -> Unit,
     onUpdateMpn: (Int, String) -> Unit,
+    onUpdateProductName: (Int, String) -> Unit,
+    onUpdateUnitOfMeasure: (Int, String) -> Unit,
     onRemoveItem: (Int) -> Unit,
     onNewProductClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -134,11 +136,16 @@ internal fun InvoiceItemsSection(
                                         textStyle = MaterialTheme.typography.bodyMedium
                                     )
                                 }
-                                Text(
-                                    text = item.productNameSnapshot,
-                                    modifier = Modifier.weight(UiConstants.WeightNameColumnLarge),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                                Box(modifier = Modifier.weight(UiConstants.WeightNameColumnLarge), contentAlignment = Alignment.CenterStart) {
+                                    OutlinedTextField(
+                                        value = item.productNameSnapshot,
+                                        onValueChange = { onUpdateProductName(item.id, it) },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        singleLine = true,
+                                        shape = MaterialTheme.shapes.small,
+                                        textStyle = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                                 Box(modifier = Modifier.weight(UiConstants.WeightQtyColumn), contentAlignment = Alignment.CenterEnd) {
                                     OutlinedTextField(
                                         value = quantityInputs[item.id] ?: item.quantity.toPlainString(),
@@ -148,12 +155,16 @@ internal fun InvoiceItemsSection(
                                         shape = MaterialTheme.shapes.small
                                     )
                                 }
-                                Text(
-                                    text = item.unitOfMeasureSnapshot,
-                                    modifier = Modifier.width(UiConstants.PriceColumnWidth),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center
-                                )
+                                Box(modifier = Modifier.width(UiConstants.PriceColumnWidth), contentAlignment = Alignment.Center) {
+                                    OutlinedTextField(
+                                        value = item.unitOfMeasureSnapshot,
+                                        onValueChange = { onUpdateUnitOfMeasure(item.id, it) },
+                                        modifier = Modifier.width(UiConstants.PriceColumnWidth),
+                                        singleLine = true,
+                                        shape = MaterialTheme.shapes.small,
+                                        textStyle = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                                 Box(modifier = Modifier.weight(UiConstants.WeightPriceColumn), contentAlignment = Alignment.CenterEnd) {
                                     OutlinedTextField(
                                         value = priceInputs[item.id] ?: item.unitPrice.toPlainString(),
