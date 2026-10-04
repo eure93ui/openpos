@@ -280,21 +280,23 @@
     {% endif %}
 
     <!-- Таблица товаров -->
-    <table class="items-table">
+    <table class="items-table" style="table-layout: auto;">
         <thead>
         <tr>
-            <th style="width: 7%;">№</th>
-            <th style="width: 49%;">Наименование</th>
-            <th style="width: 9%;">Ед.</th>
-            <th style="width: 9%;">Кол.</th>
-            <th style="width: 13%;">Цена</th>
-            <th style="width: 13%;">Сумма</th>
+            <th style="width: 5%;">№</th>
+            <th style="max-width: 13.5%;">Артикул</th>
+            <th style="width: 40.5%;">Наименование</th>
+            <th style="width: 8%;">Ед.</th>
+            <th style="width: 8%;">Кол.</th>
+            <th style="width: 15%;">Цена</th>
+            <th style="width: 15%;">Сумма</th>
         </tr>
         </thead>
         <tbody>
         {% for item in invoice.items %}
         <tr>
             <td class="text-center">{{ item.index }}</td>
+            <td style="max-width: 14%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.mpnSnapshot }}</td>
             <td>{{ item.productNameSnapshot }}</td>
             <td class="text-center">{{ item.unitOfMeasureSnapshot }}</td>
             <td class="text-right">{{ item.quantity }}</td>
@@ -307,9 +309,17 @@
 
     <!-- Финансовые итоги -->
     <table class="summary-table">
+        {% if invoice.taxRate.percent is not empty and invoice.taxRate.percent > 0 and invoice.taxAmount is not empty %}
+        <tr>
+            <td class="text-right" style="padding-bottom: 2px;">
+                В т.ч. НДС ({{ invoice.taxRate.percent }}%):
+            </td>
+            <td class="text-right" style="width: 26%; padding-bottom: 2px;">{{ invoice.taxAmount }}</td>
+        </tr>
+        {% endif %}
         <tr class="total-row">
             <td class="text-right">
-                ИТОГО{% if invoice.taxRate.percent is not empty and invoice.taxRate.percent > 0 %} (в т.ч. НДС {{ invoice.taxRate.percent }}%){% endif %}:
+                ИТОГО:
             </td>
             <td class="text-right" style="width: 26%;">{{ invoice.totalAmount }}</td>
         </tr>
@@ -341,8 +351,8 @@
     <!-- Блок подписей -->
     <table class="signature-table">
         <tr>
-            <td style="width: 50%;">Сдал (продавец): <span class="line"></span></td>
-            <td style="width: 50%;">Принял (покупатель): <span class="line"></span></td>
+            <td style="width: 50%;">Отпустил: <span class="line"></span></td>
+            <td style="width: 50%;">Заказчик: <span class="line"></span></td>
         </tr>
     </table>
 </div>
