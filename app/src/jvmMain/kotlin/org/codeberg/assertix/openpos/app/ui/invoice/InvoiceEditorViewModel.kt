@@ -282,30 +282,19 @@ class InvoiceEditorViewModel(
 
     fun addProduct(item: Item) {
         uiState.update { state ->
-            val existingIndex = state.items.indexOfFirst { it.itemId == item.id }
-            val updatedItems = if (existingIndex >= 0) {
-                state.items.mapIndexed { index, invoiceItem ->
-                    if (index == existingIndex) {
-                        val newQty = invoiceItem.quantity.add(BigDecimal.ONE)
-                        invoiceItem.copy(
-                            quantity = newQty,
-                            totalPrice = newQty.multiply(invoiceItem.unitPrice)
-                        )
-                    } else invoiceItem
-                }
-            } else {
-                val defaultPrice = item.defaultPrice ?: BigDecimal.ZERO
-                state.items + InvoiceItem(
-                    id = state.items.size + 1,
-                    itemId = item.id,
-                    productNameSnapshot = item.productName,
-                    unitOfMeasureSnapshot = item.unitOfMeasure,
-                    quantity = BigDecimal.ONE,
-                    unitPrice = defaultPrice,
-                    totalPrice = defaultPrice,
-                    mpnSnapshot = item.mpn
-                )
-            }
+            val defaultPrice = item.defaultPrice ?: BigDecimal.ZERO
+            val newId = (state.items.maxOfOrNull { it.id } ?: 0) + 1
+            val newItem = InvoiceItem(
+                id = newId,
+                itemId = item.id,
+                productNameSnapshot = item.productName,
+                unitOfMeasureSnapshot = item.unitOfMeasure,
+                quantity = BigDecimal.ONE,
+                unitPrice = defaultPrice,
+                totalPrice = defaultPrice,
+                mpnSnapshot = item.mpn
+            )
+            val updatedItems = state.items + newItem
             state.copy(
                 items = updatedItems,
                 itemsError = null,
