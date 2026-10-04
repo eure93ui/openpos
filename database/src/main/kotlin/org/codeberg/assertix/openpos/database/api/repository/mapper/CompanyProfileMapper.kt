@@ -11,16 +11,20 @@ import org.codeberg.assertix.openpos.database.model.company.CompanyCredentialsTa
 import org.codeberg.assertix.openpos.database.model.company.CompanyInfoTable
 import org.jetbrains.exposed.v1.core.ResultRow
 
-fun ResultRow.toCompanyProfile(): CompanyProfile =
+fun ResultRow.toCompanyProfile(phoneNumbers: List<PhoneNumber> = emptyList()): CompanyProfile =
     CompanyProfile(
         companyInfo =
             CompanyInfo(
                 fullNaming = this[CompanyInfoTable.fullNaming],
                 companyType = this[CompanyInfoTable.companyType],
                 legalAddress = this[CompanyInfoTable.legalAddress],
-                phoneNumber =
-                    PhoneNumberValidator.returnValidated(this[CompanyInfoTable.phoneNumber])
-                        ?: PhoneNumber(this[CompanyInfoTable.phoneNumber]),
+                phoneNumbers =
+                    phoneNumbers.ifEmpty {
+                        listOf(
+                            PhoneNumberValidator.returnValidated(this[CompanyInfoTable.phoneNumber])
+                                ?: PhoneNumber(this[CompanyInfoTable.phoneNumber]),
+                        )
+                    },
             ),
         companyCredentials =
             CompanyCredentials(

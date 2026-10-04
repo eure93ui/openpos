@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 import org.codeberg.assertix.openpos.app.ui.components.FormRow
 import org.codeberg.assertix.openpos.app.ui.components.FormSectionCard
 import org.codeberg.assertix.openpos.app.ui.components.FormTextField
+import org.codeberg.assertix.openpos.app.ui.toImage
 import org.codeberg.assertix.openpos.app.ui.startup.transformations.PhoneVisualTransformation
 import org.codeberg.assertix.openpos.data.model.company.CompanyType
 import org.codeberg.assertix.openpos.resources.*
@@ -100,16 +101,57 @@ internal fun CompanyProfileTabContent(
                     value = state.address,
                     onValueChange = { viewModel.updateAddress(it) },
                     label = stringResource(Res.string.legal_address),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.fillMaxWidth()
                 )
-                OutlinedTextField(
-                    value = state.phoneNumber,
-                    onValueChange = { viewModel.updatePhoneNumber(it) },
-                    label = { Text(stringResource(Res.string.tbl_phone)) },
-                    visualTransformation = PhoneVisualTransformation(),
-                    shape = MaterialTheme.shapes.medium,
-                    modifier = Modifier.weight(1f)
+            }
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    "Телефоны компании",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                state.phoneNumbers.forEachIndexed { index, phone ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
+                            value = phone,
+                            onValueChange = { viewModel.updatePhoneNumber(index, it) },
+                            label = { Text(if (index == 0) stringResource(Res.string.tbl_phone) + " (основной)" else "Телефон ${index + 1}") },
+                            visualTransformation = PhoneVisualTransformation(),
+                            shape = MaterialTheme.shapes.medium,
+                            modifier = Modifier.weight(1f)
+                        )
+                        if (index > 0) {
+                            IconButton(
+                                onClick = { viewModel.removePhoneNumber(index) },
+                                modifier = Modifier.size(48.dp)
+                            ) {
+                                Res.drawable.delete.toImage()
+                            }
+                        }
+                    }
+                }
+                OutlinedButton(
+                    onClick = { viewModel.addPhoneNumber() },
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(modifier = Modifier.size(16.dp)) {
+                            Res.drawable.add.toImage()
+                        }
+                        Text("Добавить телефон")
+                    }
+                }
             }
         }
 

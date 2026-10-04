@@ -1,6 +1,8 @@
 package org.codeberg.assertix.openpos.app.ui.settings
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -103,17 +105,24 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(4.dp))
 
-            when (selectedTab) {
-                SettingsTab.CompanyProfile -> CompanyProfileTabContent(state, viewModel)
-                SettingsTab.DatabaseHardware -> DatabaseHardwareTabContent(
-                    state = state,
-                    onImport = { importLauncher.launch() },
-                    onExportData = { exportDataLauncher.launch(suggestedName = "openpos_data", defaultExtension = "sqlite") },
-                    onExportSchema = { exportSchemaLauncher.launch(suggestedName = "openpos_schema_empty", defaultExtension = "sqlite") },
-                    onSwitchDatabase = { viewModel.switchDatabase() },
-                    onUpdateDefaultPrinter = { viewModel.updateDefaultPrinter(it) }
-                )
-                SettingsTab.FinancialConstants -> FinancialConstantsTabContent(state, viewModel)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                when (selectedTab) {
+                    SettingsTab.CompanyProfile -> CompanyProfileTabContent(state, viewModel)
+                    SettingsTab.DatabaseHardware -> DatabaseHardwareTabContent(
+                        state = state,
+                        onImport = { importLauncher.launch() },
+                        onExportData = { exportDataLauncher.launch(suggestedName = "openpos_data", defaultExtension = "sqlite") },
+                        onExportSchema = { exportSchemaLauncher.launch(suggestedName = "openpos_schema_empty", defaultExtension = "sqlite") },
+                        onSwitchDatabase = { viewModel.switchDatabase() },
+                        onUpdateDefaultPrinter = { viewModel.updateDefaultPrinter(it) }
+                    )
+                    SettingsTab.FinancialConstants -> FinancialConstantsTabContent(state, viewModel)
+                }
             }
     }
 }

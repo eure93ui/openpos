@@ -24,10 +24,12 @@ object InvoiceReportMapper {
                     ),
                 "taxAmount" to
                     if (invoice.taxRate.percent > 0) {
-                        org.codeberg.assertix.openpos.calculations.calculateTaxAmount(
-                            invoice.totalPrice,
-                            invoice.taxRate.percent,
-                        ).setScale(2, RoundingMode.HALF_UP).toPlainString()
+                        org.codeberg.assertix.openpos.calculations
+                            .calculateTaxAmount(
+                                invoice.totalPrice,
+                                invoice.taxRate.percent,
+                            ).setScale(2, RoundingMode.HALF_UP)
+                            .toPlainString()
                     } else {
                         null
                     },
@@ -60,6 +62,7 @@ object InvoiceReportMapper {
                     "kpp" to companyProfile.companyCredentials.kpp,
                     "address" to companyProfile.companyInfo.legalAddress,
                     "phoneNumber" to companyProfile.companyInfo.phoneNumber.value,
+                    "phoneNumbers" to companyProfile.companyInfo.phoneNumbers.map { it.value },
                 )
             } else {
                 mapOf(

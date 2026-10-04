@@ -18,6 +18,7 @@ import org.codeberg.assertix.openpos.database.model.ItemsTable
 import org.codeberg.assertix.openpos.database.model.company.BankDetailsTable
 import org.codeberg.assertix.openpos.database.model.company.CompanyCredentialsTable
 import org.codeberg.assertix.openpos.database.model.company.CompanyInfoTable
+import org.codeberg.assertix.openpos.database.model.company.CompanyPhonesTable
 import org.codeberg.assertix.openpos.database.model.company.CompanyProfileTable
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
@@ -78,6 +79,7 @@ class SessionHolder : AutoCloseable {
                                 InvoiceItemsTable.tableName,
                                 InvoicesTable.tableName,
                                 CompanyInfoTable.tableName,
+                                CompanyPhonesTable.tableName,
                                 CompanyCredentialsTable.tableName,
                                 BankDetailsTable.tableName,
                                 CompanyProfileTable.tableName,

@@ -30,7 +30,7 @@ data class SettingsUiState(
     val account: String = "",
     val corrAccount: String = "",
     val invoicePrefix: String = "INV-2026-",
-    val phoneNumber: String = "+7 (999) 123-45-67",
+    val phoneNumbers: List<String> = listOf("+7 (999) 123-45-67"),
     val companyType: CompanyType = CompanyType.LegalEntity,
     val taxPercent: Int = 20,
     val isLoading: Boolean = false,
@@ -77,7 +77,7 @@ class SettingsViewModel(
                         bic = profile.bankDetails.bic,
                         account = profile.bankDetails.checkingAccount,
                         corrAccount = profile.bankDetails.correspondentAccount,
-                        phoneNumber = profile.companyInfo.phoneNumber.value,
+                        phoneNumbers = profile.companyInfo.phoneNumbers.map { it.value }.ifEmpty { listOf("+7 (999) 123-45-67") },
                         companyType = profile.companyInfo.companyType,
                         taxPercent = financialSettings.taxPercent,
                         invoicePrefix = financialSettings.invoicePrefix,
@@ -97,7 +97,31 @@ class SettingsViewModel(
     fun updateInn(value: String) { _uiState.update { it.copy(inn = value) } }
     fun updateKpp(value: String) { _uiState.update { it.copy(kpp = value) } }
     fun updateAddress(value: String) { _uiState.update { it.copy(address = value) } }
-    fun updatePhoneNumber(value: String) { _uiState.update { it.copy(phoneNumber = value) } }
+    fun updatePhoneNumber(index: Int, value: String) {
+        _uiState.update { state ->
+            val updated = state.phoneNumbers.toMutableList()
+            if (index in updated.indices) {
+                updated[index] = value
+            }
+            state.copy(phoneNumbers = updated)
+        }
+    }
+    fun addPhoneNumber() {
+        _uiState.update { state ->
+            state.copy(phoneNumbers = state.phoneNumbers + "")
+        }
+    }
+    fun removePhoneNumber(index: Int) {
+        if (index > 0) {
+            _uiState.update { state ->
+                val updated = state.phoneNumbers.toMutableList()
+                if (index in updated.indices) {
+                    updated.removeAt(index)
+                }
+                state.copy(phoneNumbers = updated.ifEmpty { listOf("") })
+            }
+        }
+    }
     fun updateCompanyType(type: CompanyType) {
         _uiState.update {
             it.copy(
@@ -127,7 +151,7 @@ class SettingsViewModel(
                         fullNaming = state.legalName,
                         companyType = state.companyType,
                         legalAddress = state.address,
-                        phoneNumber = PhoneNumber(state.phoneNumber)
+                        phoneNumbers = state.phoneNumbers.map { PhoneNumber(it) }
                     ),
                     companyCredentials = CompanyCredentials(
                         inn = state.inn,
