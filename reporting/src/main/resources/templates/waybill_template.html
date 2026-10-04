@@ -300,8 +300,8 @@
         {% for item in invoice.items %}
         <tr>
             <td class="text-center">{{ item.index }}</td>
-            <td style="max-width: 14%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.mpnSnapshot }}</td>
             <td>{{ item.productNameSnapshot }}</td>
+            <td style="max-width: 14%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.mpnSnapshot }}</td>
             <td class="text-center">{{ item.unitOfMeasureSnapshot }}</td>
             <td class="text-right">{{ item.quantity }}</td>
             <td class="text-right">{{ item.unitPrice }}</td>
