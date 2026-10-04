@@ -15,7 +15,7 @@ internal fun ClientDeleteDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(Res.string.delete_client_title)) },
-        text = { Text("Вы действительно хотите удалить клиента ${client.fullName}?") },
+        text = { Text("Вы действительно хотите удалить клиента ${client.fullName.snapshot()}?") },
         confirmButton = {
             Button(
                 onClick = onConfirm,
