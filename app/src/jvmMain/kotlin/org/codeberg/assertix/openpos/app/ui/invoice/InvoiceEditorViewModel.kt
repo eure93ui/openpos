@@ -369,6 +369,28 @@ class InvoiceEditorViewModel(
         }
     }
 
+    fun updateItemProductName(itemId: Int, nameStr: String) {
+        uiState.update { state ->
+            val updated = state.items.map { item ->
+                if (item.id == itemId) {
+                    item.copy(productNameSnapshot = nameStr)
+                } else item
+            }
+            state.copy(items = updated, itemsError = null)
+        }
+    }
+
+    fun updateItemUnitOfMeasure(itemId: Int, unitStr: String) {
+        uiState.update { state ->
+            val updated = state.items.map { item ->
+                if (item.id == itemId) {
+                    item.copy(unitOfMeasureSnapshot = unitStr)
+                } else item
+            }
+            state.copy(items = updated, itemsError = null)
+        }
+    }
+
     fun removeItem(itemId: Int?) {
         uiState.update { state ->
             state.copy(items = state.items.filter { it.id != itemId })
