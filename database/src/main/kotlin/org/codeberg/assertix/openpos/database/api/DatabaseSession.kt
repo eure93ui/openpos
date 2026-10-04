@@ -10,6 +10,7 @@ import org.codeberg.assertix.openpos.database.model.ItemsTable
 import org.codeberg.assertix.openpos.database.model.company.BankDetailsTable
 import org.codeberg.assertix.openpos.database.model.company.CompanyCredentialsTable
 import org.codeberg.assertix.openpos.database.model.company.CompanyInfoTable
+import org.codeberg.assertix.openpos.database.model.company.CompanyPhonesTable
 import org.codeberg.assertix.openpos.database.model.company.CompanyProfileTable
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
@@ -55,6 +56,7 @@ internal data class DatabaseSession(
                     InvoiceItemsTable,
                     InvoicesTable,
                     CompanyInfoTable,
+                    CompanyPhonesTable,
                     CompanyCredentialsTable,
                     BankDetailsTable,
                     CompanyProfileTable,
@@ -68,6 +70,12 @@ internal data class DatabaseSession(
                             it[legalAddress] = companyProfile.companyInfo.legalAddress
                             it[phoneNumber] = companyProfile.companyInfo.phoneNumber.value
                         }
+                    companyProfile.companyInfo.phoneNumbers.forEach { phone ->
+                        CompanyPhonesTable.insert {
+                            it[companyInfo] = infoId
+                            it[phoneNumber] = phone.value
+                        }
+                    }
                     val credentialsId =
                         CompanyCredentialsTable.insertAndGetId {
                             it[inn] = companyProfile.companyCredentials.inn
