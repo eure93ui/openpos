@@ -22,11 +22,7 @@ internal fun ItemDialog(
     var defaultPrice by remember { mutableStateOf(item?.defaultPrice?.toPlainString() ?: "") }
 
     val productNameError = if (productName.isBlank()) "Наименование товара обязательно" else null
-    val unitError = when {
-        unitOfMeasure.isBlank() -> "Единица измерения обязательна"
-        unitOfMeasure.any { it.isDigit() } -> "Единица измерения должна содержать только текст"
-        else -> null
-    }
+    val unitError = if (unitOfMeasure.isBlank()) "Единица измерения обязательна" else null
     val priceError = if (defaultPrice.isNotBlank()) {
         val normalized = defaultPrice.trim().replace(',', '.')
         val parsed = normalized.toBigDecimalOrNull()
