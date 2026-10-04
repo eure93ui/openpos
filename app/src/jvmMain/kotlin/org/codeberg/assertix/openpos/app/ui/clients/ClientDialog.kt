@@ -68,10 +68,12 @@ internal fun ClientDialog(
                     supportingText = { middleNameError?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
                     modifier = Modifier.fillMaxWidth()
                 )
-                FormTextField(
+                OutlinedTextField(
                     value = phone,
-                    onValueChange = { phone = it },
-                    label = stringResource(Res.string.client_phone_label),
+                    onValueChange = { phone = it.filter { ch -> ch.isDigit() } },
+                    label = { Text(stringResource(Res.string.client_phone_label)) },
+                    visualTransformation = org.codeberg.assertix.openpos.app.ui.startup.transformations.PhoneVisualTransformation(),
+                    shape = MaterialTheme.shapes.medium,
                     isError = phoneError != null,
                     supportingText = { phoneError?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
                     modifier = Modifier.fillMaxWidth()
