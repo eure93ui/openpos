@@ -10,7 +10,7 @@ internal fun calculateTotalWithTax(
     taxRatePercent: Int,
 ): BigDecimal = baseAmount
 
-internal fun calculateTaxAmount(
+fun calculateTaxAmount(
     baseAmount: BigDecimal,
     taxRatePercent: Int,
 ): BigDecimal {

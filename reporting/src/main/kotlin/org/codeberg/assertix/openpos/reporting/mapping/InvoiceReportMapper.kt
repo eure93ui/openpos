@@ -22,6 +22,15 @@ object InvoiceReportMapper {
                         "percent" to invoice.taxRate.percent,
                         "name" to invoice.taxRate.toString(),
                     ),
+                "taxAmount" to
+                    if (invoice.taxRate.percent > 0) {
+                        org.codeberg.assertix.openpos.calculations.calculateTaxAmount(
+                            invoice.totalPrice,
+                            invoice.taxRate.percent,
+                        ).setScale(2, RoundingMode.HALF_UP).toPlainString()
+                    } else {
+                        null
+                    },
                 "items" to
                     invoice.items.mapIndexed { index, item ->
                         mapOf(
@@ -31,6 +40,7 @@ object InvoiceReportMapper {
                             "quantity" to item.quantity.toPlainString(),
                             "unitPrice" to item.unitPrice.setScale(2, RoundingMode.HALF_UP).toPlainString(),
                             "totalPrice" to item.totalPrice.setScale(2, RoundingMode.HALF_UP).toPlainString(),
+                            "mpnSnapshot" to (item.mpnSnapshot ?: ""),
                         )
                     },
                 "totalAmount" to invoice.totalPrice.setScale(2, RoundingMode.HALF_UP).toPlainString(),
