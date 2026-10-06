@@ -9,7 +9,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.codeberg.assertix.openpos.app.settings.AppSettings
@@ -38,7 +37,6 @@ class InvoiceEditorViewModel(
     private val financialRepository: FinancialRepository,
     private val companyProfileRepository: CompanyProfileRepository,
     private val appSettings: AppSettings,
-    initialInvoiceId: Int? = null
 ) : ViewModel() {
 
     val uiState: StateFlow<InvoiceEditorUiState>
@@ -48,12 +46,13 @@ class InvoiceEditorViewModel(
     private var productSearchJob: Job? = null
 
     init {
-        if (initialInvoiceId != null && initialInvoiceId > 0) {
-            loadInvoice(initialInvoiceId)
-        } else {
-            resetInvoice()
-        }
         loadClients()
+    }
+
+    fun loadOrReset(id: Int?) = if (id != null && id > 0) {
+        loadInvoice(id)
+    } else {
+        resetInvoice()
     }
 
     private fun loadInvoice(id: Int) {
@@ -236,7 +235,14 @@ class InvoiceEditorViewModel(
     }
 
     fun clearMessages() {
-        uiState.update { it.copy(successMessage = null, generalError = null, clientError = null, itemsError = null) }
+        uiState.update {
+            it.copy(
+                successMessage = null,
+                generalError = null,
+                clientError = null,
+                itemsError = null
+            )
+        }
     }
 
     fun updateVat(vat: Int) {
@@ -438,13 +444,16 @@ class InvoiceEditorViewModel(
                     state.toInvoice()
                 }
 
-                if (state.isExisting) {
+                val currentInvoiceId = if (state.isExisting) {
                     invoiceRepository.update(finalInvoice)
+                    state.invoiceId
                 } else {
-                    invoiceRepository.add(finalInvoice)
+                    val invoiceId = invoiceRepository.add(finalInvoice)
+                    invoiceId
                 }
                 uiState.update {
                     it.copy(
+                        invoiceId = currentInvoiceId,
                         isSaving = false,
                         successMessage = "Накладная успешно сохранена",
                         isExisting = true
@@ -452,7 +461,12 @@ class InvoiceEditorViewModel(
                 }
                 onSuccess(finalInvoice)
             } catch (e: Exception) {
-                uiState.update { it.copy(isSaving = false, generalError = e.localizedMessage ?: "Ошибка сохранения") }
+                uiState.update {
+                    it.copy(
+                        isSaving = false,
+                        generalError = e.localizedMessage ?: "Ошибка сохранения"
+                    )
+                }
             }
         }
     }
@@ -573,7 +587,12 @@ class InvoiceEditorViewModel(
                     withContext(Dispatchers.IO) {
                         java.nio.file.Files.write(path, pdfBytes)
                     }
-                    uiState.update { it.copy(isPdfProcessing = false, successMessage = "PDF успешно экспортирован") }
+                    uiState.update {
+                        it.copy(
+                            isPdfProcessing = false,
+                            successMessage = "PDF успешно экспортирован"
+                        )
+                    }
                 } catch (e: Exception) {
                     uiState.update {
                         it.copy(
