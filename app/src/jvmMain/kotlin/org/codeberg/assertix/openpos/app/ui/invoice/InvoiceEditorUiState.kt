@@ -3,17 +3,19 @@ package org.codeberg.assertix.openpos.app.ui.invoice
 import org.codeberg.assertix.openpos.calculations.calculateTaxForItems
 import org.codeberg.assertix.openpos.calculations.itemsTotal
 import org.codeberg.assertix.openpos.data.model.Client
+import org.codeberg.assertix.openpos.data.model.Item
 import org.codeberg.assertix.openpos.data.model.TaxRate
 import org.codeberg.assertix.openpos.data.model.invoice.Invoice
 import org.codeberg.assertix.openpos.data.model.invoice.InvoiceItem
 import org.codeberg.assertix.openpos.data.model.invoice.InvoiceStatus
+import java.awt.image.BufferedImage
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class InvoiceEditorUiState(
     val invoiceId: Int = -1,
-    val invoiceNumber: String = "INV-2026-00045",
+    val invoiceNumber: String = "",
     val issueDate: String = LocalDate.now().toString(),
     val status: InvoiceStatus = InvoiceStatus.DRAFT,
     val isSaving: Boolean = false,
@@ -23,7 +25,7 @@ data class InvoiceEditorUiState(
     val clients: List<Client> = emptyList(),
     val isClientDropdownExpanded: Boolean = false,
     val productSearchQuery: String = "",
-    val searchResults: List<org.codeberg.assertix.openpos.data.model.Item> = emptyList(),
+    val searchResults: List<Item> = emptyList(),
     val isProductDropdownExpanded: Boolean = false,
     val isNewClientDialogVisible: Boolean = false,
     val isNewProductDialogVisible: Boolean = false,
@@ -37,7 +39,7 @@ data class InvoiceEditorUiState(
     val generalError: String? = null,
     val successMessage: String? = null,
     val isPdfPreviewVisible: Boolean = false,
-    val previewImages: List<java.awt.image.BufferedImage> = emptyList(),
+    val previewImages: List<BufferedImage> = emptyList(),
     val isPdfProcessing: Boolean = false,
     val quantityInputs: Map<Int, String> = emptyMap(),
     val priceInputs: Map<Int, String> = emptyMap()
