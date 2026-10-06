@@ -14,12 +14,11 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class InvoiceEditorUiState(
-    val invoiceId: Int = -1,
+    val invoiceId: Int? = null,
     val invoiceNumber: String = "",
     val issueDate: String = LocalDate.now().toString(),
     val status: InvoiceStatus = InvoiceStatus.DRAFT,
     val isSaving: Boolean = false,
-    val isExisting: Boolean = false,
     val selectedClient: Client? = null,
     val clientSearchQuery: String = "",
     val clients: List<Client> = emptyList(),

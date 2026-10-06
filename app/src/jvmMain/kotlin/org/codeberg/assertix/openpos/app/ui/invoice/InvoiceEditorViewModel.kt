@@ -65,7 +65,6 @@ class InvoiceEditorViewModel(
                         invoiceNumber = invoice.invoiceNumber,
                         issueDate = invoice.issueDate.toString(),
                         status = invoice.status,
-                        isExisting = true,
                         selectedClient = invoice.client,
                         items = invoice.items,
                         taxPercent = invoice.taxRate.percent,
@@ -444,19 +443,17 @@ class InvoiceEditorViewModel(
                     state.toInvoice()
                 }
 
-                val currentInvoiceId = if (state.isExisting) {
+                val currentInvoiceId = if (state.invoiceId == null) {
+                    invoiceRepository.add(finalInvoice)
+                } else {
                     invoiceRepository.update(finalInvoice)
                     state.invoiceId
-                } else {
-                    val invoiceId = invoiceRepository.add(finalInvoice)
-                    invoiceId
                 }
                 uiState.update {
                     it.copy(
                         invoiceId = currentInvoiceId,
                         isSaving = false,
                         successMessage = "Накладная успешно сохранена",
-                        isExisting = true
                     )
                 }
                 onSuccess(finalInvoice)

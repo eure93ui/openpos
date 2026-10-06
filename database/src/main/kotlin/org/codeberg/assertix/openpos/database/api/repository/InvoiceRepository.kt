@@ -172,7 +172,8 @@ class InvoiceRepository(
 
     suspend fun update(invoice: Invoice): Unit =
         query {
-            InvoicesTable.update(where = { InvoicesTable.id eq invoice.id }) {
+            val invoiceId = invoice.id ?: throw IllegalStateException("Invoice id must not be null for update.")
+            InvoicesTable.update(where = { InvoicesTable.id eq invoiceId }) {
                 it[invoiceNumber] = invoice.invoiceNumber
                 it[issueDate] = invoice.issueDate.toString()
                 it[updatedAt] = invoice.updatedAt.toString()
@@ -187,7 +188,7 @@ class InvoiceRepository(
             }
 
             InvoiceItemsTable.deleteWhere { InvoiceItemsTable.invoice eq invoice.id }
-            saveInvoiceItems(invoice.id, invoice.items)
+            saveInvoiceItems(invoiceId, invoice.items)
         }
 
     private fun saveInvoiceItems(

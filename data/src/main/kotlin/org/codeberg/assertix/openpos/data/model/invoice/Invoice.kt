@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 
 @Serializable
 data class Invoice(
-    val id: Int = -1, // still not sure about making it nullable before database insert
+    val id: Int? = null,
     val invoiceNumber: String,
     val issueDate: LocalDate,
     val updatedAt: LocalDateTime,

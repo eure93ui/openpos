@@ -213,7 +213,7 @@ fun HistoryScreen(
             querySize = state.querySize,
             isLoading = state.isLoading,
             onPrint = { invoice -> println("Print invoice ${invoice.invoiceNumber}") },
-            onEdit = { invoice -> onEditInvoice(invoice.id) },
+            onEdit = { invoice -> invoice.id?.let(onEditInvoice) },
             onDelete = { invoice -> viewModel.showDeleteDialog(invoice) },
             onQuerySizeChange = { viewModel.setQuerySize(it) },
             onPreviousPage = { viewModel.previousPage() },
@@ -227,7 +227,7 @@ fun HistoryScreen(
         HistoryDeleteDialog(
             invoice = state.invoiceToDelete!!,
             onDismiss = { viewModel.hideDeleteDialog() },
-            onConfirm = { viewModel.deleteInvoice(state.invoiceToDelete!!.id) }
+            onConfirm = { state.invoiceToDelete?.id?.let { viewModel.deleteInvoice(it) } }
         )
     }
 }
