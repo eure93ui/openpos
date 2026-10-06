@@ -21,17 +21,13 @@ import org.codeberg.assertix.openpos.app.ui.toImage
 import org.codeberg.assertix.openpos.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 import kotlin.io.path.Path
 
 @Composable
 fun InvoiceEditorScreen(
     editInvoiceId: Int? = null,
     onReturn: () -> Unit = {},
-    viewModel: InvoiceEditorViewModel = koinViewModel(
-        key = editInvoiceId?.toString() ?: "new",
-        parameters = { parametersOf(editInvoiceId) }
-    )
+    viewModel: InvoiceEditorViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
     var showResetConfirmation by remember { mutableStateOf(false) }
@@ -42,6 +38,10 @@ fun InvoiceEditorScreen(
         platformFile?.file?.path?.let { pathString ->
             viewModel.exportPdf(Path(pathString))
         }
+    }
+
+    LaunchedEffect(editInvoiceId) {
+        viewModel.loadOrReset(editInvoiceId)
     }
 
     AppScreenContainer(
