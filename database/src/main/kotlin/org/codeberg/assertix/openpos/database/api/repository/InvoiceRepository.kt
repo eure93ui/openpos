@@ -30,7 +30,7 @@ class InvoiceRepository(
 ) {
     private suspend fun <T> query(block: suspend () -> T): T = sessionHolder.query(block)
 
-    suspend fun add(invoice: Invoice): Unit =
+    suspend fun add(invoice: Invoice): Int =
         query {
             val invoiceId: Int =
                 InvoicesTable
@@ -49,6 +49,7 @@ class InvoiceRepository(
                     }.value
 
             saveInvoiceItems(invoiceId, invoice.items)
+            invoiceId
         }
 
     suspend fun getById(invoiceId: Int): Invoice? =
