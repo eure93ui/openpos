@@ -50,8 +50,8 @@ fun InvoiceEditorScreen(
         onDismissNotification = { viewModel.clearMessages() }
     ) {
         ScreenHeader(
-            title = if (state.isExisting) state.invoiceNumber else stringResource(Res.string.invoice_title),
-            badgeText = if (state.isExisting) state.issueDate else "${state.invoiceNumber} | ${state.issueDate}",
+            title = if (state.invoiceId != null) state.invoiceNumber else stringResource(Res.string.invoice_title),
+            badgeText = if (state.invoiceId != null) state.issueDate else "${state.invoiceNumber} | ${state.issueDate}",
             onResetClick = { showResetConfirmation = true },
             onSecondaryActionClick = {
                 fileSaverLauncher.launch(
