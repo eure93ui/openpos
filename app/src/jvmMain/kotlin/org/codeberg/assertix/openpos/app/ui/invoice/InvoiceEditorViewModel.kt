@@ -69,7 +69,9 @@ class InvoiceEditorViewModel(
                         items = invoice.items,
                         taxPercent = invoice.taxRate.percent,
                         printableNotes = invoice.printableNotes ?: "",
-                        internalNotes = invoice.internalNotes ?: ""
+                        internalNotes = invoice.internalNotes ?: "",
+                        quantityInputs = invoice.items.associate { item -> item.id to item.quantity.toPlainString() },
+                        priceInputs = invoice.items.associate { item -> item.id to item.unitPrice.toPlainString() },
                     )
                 }
             }
