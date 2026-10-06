@@ -40,7 +40,7 @@ fun InvoiceEditorScreen(
         }
     }
 
-    LaunchedEffect(editInvoiceId) {
+    LaunchedEffect(Unit) {
         viewModel.loadOrReset(editInvoiceId)
     }
 
