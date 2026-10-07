@@ -3,12 +3,15 @@ package org.codeberg.assertix.openpos.app.ui.settings
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.codeberg.assertix.openpos.app.settings.AppSettings
+import org.codeberg.assertix.openpos.app.util.PrinterManager.getAvailablePrinters
 import org.codeberg.assertix.openpos.data.model.FinancialConfiguration
 import org.codeberg.assertix.openpos.data.model.PhoneNumber
 import org.codeberg.assertix.openpos.data.model.company.*
@@ -60,13 +63,13 @@ class SettingsViewModel(
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(isLoading = true, errorMessage = null, saveSuccess = false) }
-                val profile = companyProfileRepository.get()
-                val financialSettings = financialRepository.get()
+                val profile = withContext(Dispatchers.IO) { companyProfileRepository.get() }
+                val financialSettings = withContext(Dispatchers.IO){financialRepository.get()}
                 val dbPath = sessionHolder.currentPath?.toAbsolutePath()?.toString()
                     ?: appSettings.rememberedDatabase.value?.toAbsolutePath()?.toString()
                     ?: ""
                 val defaultPrinter = appSettings.defaultPrinter.value
-                val availablePrinters = org.codeberg.assertix.openpos.app.util.PrinterManager.getAvailablePrinters()
+                val availablePrinters = withContext(Dispatchers.IO) { getAvailablePrinters() }
                 _uiState.update {
                     it.copy(
                         legalName = profile.companyInfo.fullNaming,
@@ -77,7 +80,8 @@ class SettingsViewModel(
                         bic = profile.bankDetails.bic,
                         account = profile.bankDetails.checkingAccount,
                         corrAccount = profile.bankDetails.correspondentAccount,
-                        phoneNumbers = profile.companyInfo.phoneNumbers.map { it.value }.ifEmpty { listOf("+7 (999) 123-45-67") },
+                        phoneNumbers = profile.companyInfo.phoneNumbers.map { it.value }
+                            .ifEmpty { listOf("+7 (999) 123-45-67") },
                         companyType = profile.companyInfo.companyType,
                         taxPercent = financialSettings.taxPercent,
                         invoicePrefix = financialSettings.invoicePrefix,
@@ -93,10 +97,22 @@ class SettingsViewModel(
         }
     }
 
-    fun updateLegalName(value: String) { _uiState.update { it.copy(legalName = value) } }
-    fun updateInn(value: String) { _uiState.update { it.copy(inn = value) } }
-    fun updateKpp(value: String) { _uiState.update { it.copy(kpp = value) } }
-    fun updateAddress(value: String) { _uiState.update { it.copy(address = value) } }
+    fun updateLegalName(value: String) {
+        _uiState.update { it.copy(legalName = value) }
+    }
+
+    fun updateInn(value: String) {
+        _uiState.update { it.copy(inn = value) }
+    }
+
+    fun updateKpp(value: String) {
+        _uiState.update { it.copy(kpp = value) }
+    }
+
+    fun updateAddress(value: String) {
+        _uiState.update { it.copy(address = value) }
+    }
+
     fun updatePhoneNumber(index: Int, value: String) {
         _uiState.update { state ->
             val updated = state.phoneNumbers.toMutableList()
@@ -106,11 +122,13 @@ class SettingsViewModel(
             state.copy(phoneNumbers = updated)
         }
     }
+
     fun addPhoneNumber() {
         _uiState.update { state ->
             state.copy(phoneNumbers = state.phoneNumbers + "")
         }
     }
+
     fun removePhoneNumber(index: Int) {
         if (index > 0) {
             _uiState.update { state ->
@@ -122,6 +140,7 @@ class SettingsViewModel(
             }
         }
     }
+
     fun updateCompanyType(type: CompanyType) {
         _uiState.update {
             it.copy(
@@ -130,12 +149,31 @@ class SettingsViewModel(
             )
         }
     }
-    fun updateBankName(value: String) { _uiState.update { it.copy(bankName = value) } }
-    fun updateBic(value: String) { _uiState.update { it.copy(bic = value) } }
-    fun updateAccount(value: String) { _uiState.update { it.copy(account = value) } }
-    fun updateCorrAccount(value: String) { _uiState.update { it.copy(corrAccount = value) } }
-    fun updateInvoicePrefix(value: String) { _uiState.update { it.copy(invoicePrefix = value) } }
-    fun updateTaxPercent(value: Int) { _uiState.update { it.copy(taxPercent = value) } }
+
+    fun updateBankName(value: String) {
+        _uiState.update { it.copy(bankName = value) }
+    }
+
+    fun updateBic(value: String) {
+        _uiState.update { it.copy(bic = value) }
+    }
+
+    fun updateAccount(value: String) {
+        _uiState.update { it.copy(account = value) }
+    }
+
+    fun updateCorrAccount(value: String) {
+        _uiState.update { it.copy(corrAccount = value) }
+    }
+
+    fun updateInvoicePrefix(value: String) {
+        _uiState.update { it.copy(invoicePrefix = value) }
+    }
+
+    fun updateTaxPercent(value: Int) {
+        _uiState.update { it.copy(taxPercent = value) }
+    }
+
     fun updateDefaultPrinter(printerName: String?) {
         appSettings.updateDefaultPrinter(printerName)
         _uiState.update { it.copy(defaultPrinter = printerName) }
@@ -188,7 +226,12 @@ class SettingsViewModel(
                     appSettings.rememberDatabase(path)
                     loadProfile()
                 } else {
-                    _uiState.update { it.copy(isLoading = false, errorMessage = "Выбранный файл не является корректной базой данных SQLite!") }
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = "Выбранный файл не является корректной базой данных SQLite!"
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
