@@ -52,6 +52,12 @@ compose.desktop {
         }
 
         nativeDistributions {
+            packageName = "OpenPOS"
+            packageVersion = project.version.toString()
+
+            vendor = "org.codeberg.assertix"
+            description = "Desktop Point of Sale & Invoicing offline app"
+
             targetFormats(TargetFormat.Rpm, TargetFormat.Msi, TargetFormat.Exe)
             modules(
                 "java.desktop",
@@ -62,12 +68,6 @@ compose.desktop {
                 "jdk.unsupported"
             )
 
-            packageName = "openpos"
-            packageVersion = project.version.toString()
-
-            vendor = "org.codeberg.assertix"
-            description = "Desktop Point of Sale & Invoicing offline app"
-
             windows {
                 shortcut = true
             }
@@ -75,6 +75,9 @@ compose.desktop {
             jvmArgs += listOf(
                 "-XX:+UseZGC",
                 "-XX:+ZGenerational",
+                "-Dapp.id=${project.group}",
+                "-Dapp.name=${packageName}",
+                "-Dapp.version=${project.version}",
             )
         }
     }
