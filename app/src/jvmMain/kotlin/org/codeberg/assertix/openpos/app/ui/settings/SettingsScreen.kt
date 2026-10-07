@@ -15,6 +15,8 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
 import org.codeberg.assertix.openpos.app.ui.components.AppScreenContainer
 import org.codeberg.assertix.openpos.app.ui.components.ScreenHeader
 import org.codeberg.assertix.openpos.app.ui.toImage
+import org.codeberg.assertix.openpos.app.util.appName
+import org.codeberg.assertix.openpos.app.util.appVersion
 import org.codeberg.assertix.openpos.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -61,7 +63,7 @@ fun SettingsScreen(
     ) {
             ScreenHeader(
                 title = stringResource(Res.string.settings_title),
-                badgeText = "OpenPOS v1.0",
+                badgeText = "$appName $appVersion",
                 onPrimaryActionClick = { viewModel.saveProfile() },
                 primaryActionText = stringResource(Res.string.btn_save_settings),
                 primaryActionIcon = Res.drawable.save
