@@ -11,6 +11,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.codeberg.assertix.openpos.app.ui.settings.SettingsTab
 import org.codeberg.assertix.openpos.app.ui.toImage
+import org.codeberg.assertix.openpos.app.util.appId
+import org.codeberg.assertix.openpos.app.util.appName
 import org.codeberg.assertix.openpos.database.api.DatabaseSavingState
 import org.codeberg.assertix.openpos.database.api.SessionInfo
 import org.codeberg.assertix.openpos.resources.*
@@ -33,7 +35,7 @@ fun AppSidebar(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "OpenPOS",
+                    text = appName,
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
