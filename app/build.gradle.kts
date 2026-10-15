@@ -65,10 +65,10 @@ compose.desktop {
                 "java.logging",
                 "java.management",
                 "java.naming",
+                "java.net.http",
                 "java.sql",
                 "jdk.unsupported"
             )
-
 
             windows {
                 shortcut = true
