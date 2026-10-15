@@ -19,15 +19,20 @@ private const val OWNER = "assertix"
 private const val REPO = "openpos"
 private const val UPDATE_FILE = ".next-update.txt"
 
-private fun constructRawUrl(version: String) =
-    "$CODEBERG/$OWNER/$REPO/raw/tag/$version/$UPDATE_FILE"
-
 class UpdateManager(
-    private val currentVersion: String
+    private val currentVersion: String,
+    private val baseUrl: String = CODEBERG,
+    private val onExit: (Path) -> Unit = { installer ->
+        ProcessBuilder(installer.absolutePathString()).start()
+        exitProcess(0)
+    }
 ) {
     private val httpClient = HttpClient.newBuilder()
         .followRedirects(HttpClient.Redirect.NORMAL)
         .build()
+
+    private fun constructRawUrl(version: String) =
+        "$baseUrl/$OWNER/$REPO/raw/tag/$version/$UPDATE_FILE"
 
     suspend fun checkForUpdate() = withContext(Dispatchers.IO) {
         runCatching {
@@ -96,7 +101,6 @@ class UpdateManager(
     }
 
     fun launchInstallerAndExit(installer: Path) {
-        ProcessBuilder(installer.absolutePathString()).start()
-        exitProcess(0)
+        onExit(installer)
     }
 }
