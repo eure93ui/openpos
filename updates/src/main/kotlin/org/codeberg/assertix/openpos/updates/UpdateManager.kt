@@ -32,7 +32,7 @@ class UpdateManager(
         .build()
 
     private fun constructRawUrl(version: String) =
-        "$baseUrl/$OWNER/$REPO/src/tag/$version/$UPDATE_FILE"
+        "$baseUrl/$OWNER/$REPO/raw/tag/$version/$UPDATE_FILE"
 
     suspend fun checkForUpdate() = withContext(Dispatchers.IO) {
         runCatching {
