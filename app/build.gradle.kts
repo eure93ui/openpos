@@ -69,6 +69,7 @@ compose.desktop {
                 "jdk.unsupported"
             )
 
+
             windows {
                 shortcut = true
             }
