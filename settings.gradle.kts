@@ -22,5 +22,6 @@ include(
     "data",
     "database",
     "calculations",
-    "reporting"
+    "reporting",
+    "updates"
 )
