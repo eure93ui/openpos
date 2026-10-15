@@ -9,10 +9,12 @@ import org.codeberg.assertix.openpos.app.ui.invoice.InvoiceEditorViewModel
 import org.codeberg.assertix.openpos.app.ui.items.ItemsViewModel
 import org.codeberg.assertix.openpos.app.ui.settings.SettingsViewModel
 import org.codeberg.assertix.openpos.app.util.appId
+import org.codeberg.assertix.openpos.app.util.appVersion
 import org.codeberg.assertix.openpos.database.api.SessionHolder
 import org.codeberg.assertix.openpos.database.api.SessionInfo
 import org.codeberg.assertix.openpos.database.api.repository.*
 import org.codeberg.assertix.openpos.database.api.repository.finance.FinancialRepository
+import org.codeberg.assertix.openpos.updates.UpdateManager
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import java.util.prefs.Preferences
@@ -36,6 +38,8 @@ val appModule = module {
     single { InvoiceRepository(get()) }
     single { CompanyProfileRepository(get()) }
     single { FinancialRepository(get()) }
+
+    single { UpdateManager(appVersion) }
 
     viewModel {
         ClientsViewModel(get())

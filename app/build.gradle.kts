@@ -33,6 +33,7 @@ kotlin {
             implementation(projects.database)
             implementation(projects.data)
             implementation(projects.reporting)
+            implementation(projects.updates)
         }
 
         commonMain.dependencies {

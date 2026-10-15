@@ -61,6 +61,7 @@
     <string name="tab_company_profile">Профиль компании</string>
     <string name="tab_database_hardware">База данных и оборудование</string>
     <string name="tab_financial_constants">Финансовые константы</string>
+    <string name="tab_updates">Обновления</string>
     <string name="legal_name">Юридическое наименование</string>
     <string name="invoice_prefix">Префикс накладных</string>
     <string name="kpp">КПП</string>

@@ -18,7 +18,9 @@ import org.codeberg.assertix.openpos.app.ui.toImage
 import org.codeberg.assertix.openpos.app.util.appName
 import org.codeberg.assertix.openpos.app.util.appVersion
 import org.codeberg.assertix.openpos.resources.*
+import org.codeberg.assertix.openpos.updates.UpdateManager
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.io.path.Path
 
@@ -29,6 +31,7 @@ fun SettingsScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     var selectedTab by remember { mutableStateOf(initialTab) }
+    val updateManager = koinInject<UpdateManager>()
 
     val importLauncher = rememberFilePickerLauncher(
         type = FileKitType.File(
@@ -124,6 +127,7 @@ fun SettingsScreen(
                         onUpdateDefaultPrinter = { viewModel.updateDefaultPrinter(it) }
                     )
                     SettingsTab.FinancialConstants -> FinancialConstantsTabContent(state, viewModel)
+                    SettingsTab.Updates -> UpdatesTabContent(updateManager)
                 }
             }
     }

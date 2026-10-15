@@ -10,5 +10,6 @@ enum class SettingsTab(
 ) {
     CompanyProfile(Res.string.tab_company_profile, Res.drawable.title),
     DatabaseHardware(Res.string.tab_database_hardware, Res.drawable.database),
-    FinancialConstants(Res.string.tab_financial_constants, Res.drawable.currency_ruble)
+    FinancialConstants(Res.string.tab_financial_constants, Res.drawable.currency_ruble),
+    Updates(Res.string.tab_updates, Res.drawable.add)
 }

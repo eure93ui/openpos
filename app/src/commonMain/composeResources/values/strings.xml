@@ -55,6 +55,7 @@
     <string name="tab_company_profile">Company Profile</string>
     <string name="tab_database_hardware">Database &amp; Hardware</string>
     <string name="tab_financial_constants">Financial constants</string>
+    <string name="tab_updates">Updates</string>
     <string name="legal_name">Legal Name</string>
     <string name="invoice_prefix">Invoice Prefix</string>
     <string name="kpp">KPP</string>
