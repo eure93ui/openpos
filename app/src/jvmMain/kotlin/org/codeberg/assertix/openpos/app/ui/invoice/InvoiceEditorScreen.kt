@@ -341,7 +341,7 @@ private fun PrintSplitButton(
                     enabled = !isProcessing,
                     modifier = Modifier.size(32.dp)
                 ) {
-                    Res.drawable.arrow_forward.toImage()
+                    Res.drawable.expand_circle_down.toImage()
                 }
 
                 DropdownMenu(

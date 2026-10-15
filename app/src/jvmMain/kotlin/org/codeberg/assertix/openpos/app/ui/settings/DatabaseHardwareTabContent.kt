@@ -40,7 +40,7 @@ internal fun DatabaseHardwareTabContent(
                 onClick = onSwitchDatabase,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Res.drawable.database.toImage()
+                Res.drawable.database_search.toImage()
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(Res.string.btn_switch_db))
             }
@@ -49,7 +49,7 @@ internal fun DatabaseHardwareTabContent(
                 onClick = onImport,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Res.drawable.upload_file.toImage()
+                Res.drawable.database_upload.toImage()
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(Res.string.btn_import_db))
             }
@@ -67,7 +67,7 @@ internal fun DatabaseHardwareTabContent(
                 onClick = onExportSchema,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Res.drawable.database.toImage()
+                Res.drawable.schema.toImage()
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(Res.string.btn_export_empty_db))
             }
